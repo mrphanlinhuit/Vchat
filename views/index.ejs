@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="author" content="Trần Tâm UIT" />
+    <title></title>
+    <script src="./js/jquery-2.1.1.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-default" role="navigation" id="main_nav">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><img src="./images/logo.png" alt="WebRTC Chat on SkyWay" id="logo"></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Chọn<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Hội Thảo</a></li>
+                        <li><a href="#">Chat Ngẫu Nhiên</a></li>
+                        <li><a href="#">Chat Nhóm</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default" >
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </form>
+            <div class="navbar-form  navbar-right">
+                <div class="form-group">
+                    <button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >Đăng Nhập</button>
+                </div>
+                <div class="form-group" >
+                    <button class="btn btn-default" data-toggle="modal" data-target="#signModal">Đăng Kí</button>
+                </div>
+            </div>
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+
+<div id="content">
+
+    <!-- Modal signup-->
+    <div class="modal fade" id="signModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h2 class="modal-title text-center" id="myModalLabel">Thông Tin Đăng Kí</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">Họ Tên</span>
+                        <input type="text" class="form-control" placeholder="Họ Tên">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Tên Đăng Nhập</span>
+                        <input type="text" class="form-control" placeholder="Tên Đăng Nhập">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Email</span>
+                        <input type="text" class="form-control" placeholder="Email">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Mật Khẩu</span>
+                        <input type="text" class="form-control" placeholder="Mật Khẩu">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Nhập Lại Mật Khẩu</span>
+                        <input type="text" class="form-control" placeholder="Nhập Lại Mật Khẩu">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Ngày Sinh</span>
+                        <input type="text" id="datepicker" class="form-control" placeholder="Ngày Sinh">
+                    </div>
+                    <div class="input-group col-md-6">
+                         <span class="input-group-addon">
+                            <input type="checkbox">
+                         </span>
+                         <span class="input-group-btn">
+                             <button class="btn btn-default" type="button">Đồng ý với mọi điều khoản</button>
+                           </span>
+
+
+                    </div><!-- /input-group -->
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ Bỏ</button>
+                    <button type="button" class="btn btn-primary">Đăng Kí</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal login-->
+
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h2 class="modal-title text-center" id="loginModalLabel">Đăng Nhập</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">Tên Đăng Nhập</span>
+                        <input type="text" class="form-control" placeholder="Email hoặc tên đăng nhập ">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Mật Khẩu</span>
+                        <input type="text" class="form-control" placeholder="Mật Khẩu">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ Bỏ</button>
+                    <button type="button" class="btn btn-primary">Đăng Nhập</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Create Room-->
+
+    <div id="room_entry">
+        <h2>Tạo phòng mới</h2>
+
+        <form id="room-form" class="form-inline" method="post" action="/">
+            <p>
+                <label>chat.skyway.io/</label>
+                <input type="text" class="form-control tooltipstered" name="room_name" pattern="[a-zA-Z0-9]{4,12}" placeholder="Nhập tên phòng" required="" autofocus="">
+                <button type="submit" class="btn btn-info btn-sm" id="create_button" value="Login">Tạo phòng</button>
+            </p>
+        </form>
+
+        <form id="room-into" class="form-inline" method="post" action="/">
+            <p>
+                <label>chat.skyway.io/</label>
+                <input type="text" class="form-control tooltipstered" name="room_name" pattern="[a-zA-Z0-9]{4,12}" placeholder="Nhập tên phòng" required="" autofocus="">
+                <button type="submit" class="btn btn-info btn-sm" id="join_button" value="Login">Vào phòng</button>
+            </p>
+        </form>
+    </div>
+    <!--end tao phong-->
+
+    <!--getting start-->
+    <section id="get_started" class="row container">
+        <h3>Use it when you want to ...</h3>
+
+        <div id="usecase1" class="steps col-xs-6 col-sm-3">
+            <div class="thumbnails">
+                <img src="./images/usecase1.jpg" alt="case1">
+            </div>
+            <p>talk with friends and family.</p>
+        </div>
+        <div id="usecase2" class="steps col-xs-6 col-sm-3">
+            <div class="thumbnails">
+                <img src="./images/usecase2.jpg" alt="case2">
+            </div>
+            <p>plan a trip to Tokyo and Mt.Fuji.</p>
+        </div>
+        <div id="usecase3" class="steps col-xs-6 col-sm-3">
+            <div class="thumbnails">
+                <img src="./images/usecase3.jpg" alt="case3">
+            </div>
+            <p>chat while watching TV and playing games.<br><a href="/football/">Football Lounge is Opened.</a></p>
+        </div>
+        <div id="usecase4" class="steps col-xs-6 col-sm-3">
+            <div class="thumbnails">
+                <img src="./images/usecase4.jpg" alt="case4">
+            </div>
+            <p>collaborate like you're in the same room for remote teams.</p>
+        </div>
+    </section>
+
+    <section  class="row container">
+            <h3>Get started</h3>
+            <p>WebRTC Chat is a video/voice chat service. You can easily talk with your friends for free! No login or installation required.<br>We provide the experience of being close to and having fun with your friends and family every day!</p>
+
+            <div id="step1" class="steps col-xs-6 col-sm-3">
+                <h4>1. Create room</h4>
+                <div class="thumbnails">
+                    <img src="./images/1CreateRoomEn.png" alt="step1">
+                </div>
+                <p>You can create your room, and the room name becomes the room URL.</p>
+            </div>
+            <div id="step2" class="steps col-xs-6 col-sm-3">
+                <h4>2. Send room URL</h4>
+                <div class="thumbnails">
+                    <img src="./images/2sendRoomURL.png" alt="step2">
+                </div>
+                <p>Send the room URL to your friends by mail, SMS, Messenger etc.</p>
+            </div>
+            <div id="step3" class="steps col-xs-6 col-sm-3">
+                <h4>3. Talk with friends</h4>
+                <div class="thumbnails">
+                    <img src="./images/3TalkingWithFriends.png" alt="step3">
+                </div>
+                <p>Just access the URL, your friends can enter the room and talk with you.</p>
+            </div>
+            <div id="step4" class="steps col-xs-6 col-sm-3">
+                <h4>4. Share a good time</h4>
+                <div class="thumbnails">
+                    <img src="./images/4SharingAGoodTime.png" alt="step4">
+                </div>
+                <p>Share sounds to have a more exciting time.</p>
+            </div>
+    </section>
+</div>
+<!--end getting start-->
+
+<footer class="panel-footer">
+        <a href="https://chat-blog.skyway.io">Blog</a>
+        <a href="/info/help">How to Use</a>
+        <a href="/info/terms">Terms of Service</a>
+</footer>
+
+<script src="./js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="./css/bootstrap.min.css" />
+
+<script src="./js/jquery-ui.min.js" ></script>
+<link rel="stylesheet" href="./css/jquery-ui.min.css" />
+<link rel="stylesheet" href="./css/index.css"/>
+
+<script>
+    $(function() {
+        $( "#datepicker" ).datepicker();
+    });
+
+</script>
+</body>
+</html>
