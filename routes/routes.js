@@ -12,7 +12,25 @@ module.exports = function(app){
         .get(function(req, res, next){
             res.render('chat');
         });
-    
+
+    app.route('/newroom')
+        .get(function(req, res, next){
+
+        })
+        .post(function(req, res, next){
+            console.log('>> create new room: ', req.body);
+            res.render('chat', {data: req.body});
+        });
+
+    app.route('/joinroom')
+        .get(function(req, res, next){
+            res.render('index');
+        })
+        .post(function(req, res, next){
+            console.log('>> join room: ', req.body);
+            res.render('chat', {data: req.body});
+        });
+
     app.route('/multi')
         .get(function(req, res, next){
             res.render('Multi-Broadcasters-and-Many-Viewers');

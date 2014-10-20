@@ -1,13 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-     <meta charset="UTF-8">
+ <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <meta name="author" content="Trần Tâm UIT" />
-    <title></title>
+    <title>zx</title>
     <script src="./js/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="./js/functions.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            var createNewRoom = $("#create_button");
+            createNewRoom.click(function(){
+                alert('create button clicked');
+                var roomName = $(this).prev().val();
+                var hash = md5(roomName);
+                SendPostRequest('/newroom', {newRoom: 'yes', roomName: hash});
+            });
+
+            var joinRoom = $("#join_button");
+            joinRoom.click(function(){
+                alert('join room');
+                var roomName = $(this).prev().val();
+                var hash = md5(roomName);
+                SendPostRequest('/joinroom', {newRoom: 'no', roomName: hash});
+            });
+        });
+    </script>
+
 </head>
 <body>
+
 <nav class="navbar navbar-default" role="navigation" id="main_nav">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -37,11 +60,11 @@
                     </ul>
                 </li>
             </ul>
-            <form class="navbar-form navbar-left" role="search">
+            <form class="navbar-form navbar-left" role="search" action="" method="post">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
                 </div>
-                <button type="submit" class="btn btn-default" >
+                <button type="submit" class="btn btn-default">
                     <span class="glyphicon glyphicon-search"></span>
                 </button>
             </form>
@@ -102,7 +125,6 @@
                              <button class="btn btn-default" type="button">Đồng ý với mọi điều khoản</button>
                            </span>
 
-
                     </div><!-- /input-group -->
 
                 </div>
@@ -146,21 +168,21 @@
     <div id="room_entry">
         <h2>Tạo phòng mới</h2>
 
-        <form id="room-form" class="form-inline" method="post" action="/">
+        <div id="room-form" class="form-inline">
             <p>
                 <label>chat.skyway.io/</label>
                 <input type="text" class="form-control tooltipstered" name="room_name" pattern="[a-zA-Z0-9]{4,12}" placeholder="Nhập tên phòng" required="" autofocus="">
-                <button type="submit" class="btn btn-info btn-sm" id="create_button" value="Login">Tạo phòng</button>
+                <button type="" class="btn btn-info btn-sm" id="create_button" value="Login">Tạo phòng</button>
             </p>
-        </form>
+        </div>
 
-        <form id="room-into" class="form-inline" method="post" action="/">
+        <div id="room-into" class="form-inline">
             <p>
                 <label>chat.skyway.io/</label>
                 <input type="text" class="form-control tooltipstered" name="room_name" pattern="[a-zA-Z0-9]{4,12}" placeholder="Nhập tên phòng" required="" autofocus="">
-                <button type="submit" class="btn btn-info btn-sm" id="join_button" value="Login">Vào phòng</button>
+                <button type="" class="btn btn-info btn-sm" id="join_button" value="Login">Vào phòng</button>
             </p>
-        </form>
+        </div>
     </div>
     <!--end tao phong-->
 
@@ -249,5 +271,7 @@
     });
 
 </script>
+
+
 </body>
 </html>

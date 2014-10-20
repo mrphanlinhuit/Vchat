@@ -5,6 +5,98 @@
     <meta name="viewport" content="width=device-width">
     <meta name="author" content="Trần Tâm UIT" />
     <title></title>
+
+    <% if(typeof data !== 'undefined'){ %>
+    <script>
+        var roomName = '<%= data.roomName %>';
+        <% if(data.newRoom === 'yes') { %>
+            var newRoom = '<%= data.newRoom %>';
+        <% } else {%>
+            var newRoom = 'no';
+        <% } %>
+    </script>
+    <% } %>
+
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/index.css"/>
+    <link rel="stylesheet" href="./css/jquery-ui.min.css" />
+    <style>
+        #content{
+            min-height: 532px;
+            height: 87%;
+        }
+
+        .navbar{
+            margin-bottom: 0px;
+        }
+
+        .video{
+            max-width: 1920px;
+            min-width: 320px;
+            width: 60%;
+        }
+
+        .img-responsive
+        {
+            width: 100%;
+            border: 1px solid #ffffff;
+        }
+        .subVideo{
+            width: 30%;
+            margin-top: -15%;
+            float: right;
+        }
+
+        .controls{
+            float: right;
+            /*margin-bottom: -100px;*/
+        }
+
+        .controls:hover{
+            z-index: inherit;
+        }
+
+        .panel-footer{
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            padding: 0px;
+        }
+        #chatBox{
+            max-height: 60%;
+            max-width: 405px;
+            min-width: 300px;
+            position: fixed;
+            bottom: -14px;
+            right: 20%;
+            z-index: 100000;
+        }
+        #chatList{
+            height: 300px;
+            overflow: scroll;
+            width: 100%;
+            margin-bottom: 0px;
+            /*display: none;*/
+        }
+        #tbChat{
+            width: 305px;
+
+        }
+        #hideChat{
+            float: right;
+            margin-top: -30px;
+        }
+    </style>
+
+    <script src="./js/jquery-2.1.1.js"></script>
+    <script src='/socket.io/socket.io.js'></script>
+    <script src="./js/RTCMultiConnection-v2.2.js"></script>
+    <script  src="./js/RTCSignaling.js"></script>
+    <script type="text/javascript" src="./js/functions.js"></script>
+
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/jquery-ui.min.js" ></script>
+
 </head>
 <body>
 <nav class="navbar navbar-default" role="navigation" id="main_nav">
@@ -63,91 +155,87 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-
 <div id="content">
-
     <div class="video">
-        <div class="col-md-offset-3 col-md-6">
 
-            <video controls class="img img-responsive" src="#" > </video>
-            <video controls class="img img-responsive subVideo" src="#" width="200"></video>
-
+        <div class="" id="videos">
+            <!--<video controls class="img img-responsive mainVideo" src="#" > </video>-->
+            <!--<video controls class="img img-responsive subVideo" src="#" width="200"></video>-->
         </div>
+
 
         <div class="controls">
             <div class="form-group">
                 <button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >
+                    <span class="glyphicon glyphicon-zoom-in"></span>
+                </button>
+                <button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >
+                    <span class="glyphicon glyphicon-zoom-out"></span>
+                </button>
+                <button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >
                     <span class="glyphicon glyphicon-sd-video"></span>
                 </button>
-            </div>
-            <div class="form-group">
                 <button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >
                     <span class="glyphicon glyphicon-hd-video"></span>
                 </button>
             </div>
         </div>
 
+
+    </div>
+
+</div>
+<div id="chatBox">
+    <div id="chatContent">
+        <a href="#" class="list-group-item active">
+            <h4 class="list-group-item-heading">Name of friend</h4>
+            <button class="btn btn-transparent" id="hideChat" onclick="hideChat()">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </a>
+        <ul class="list-group" id="chatList">
+
+            <li class="list-group-item list-group-item-info" >Hello</li>
+            <li class="list-group-item">Hi</li>
+            <li class="list-group-item list-group-item-info">Morbi leo risus</li>
+            <li class="list-group-item">Porta ac consectetur ac</li>
+            <li class="list-group-item list-group-item-info">Vestibulum at eros</li>
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item list-group-item-info">Morbi leo risus</li>
+            <li class="list-group-item">Porta ac consectetur ac</li>
+            <li class="list-group-item">Vestibulum at eros</li>
+        </ul>
+    </div>
+
+    <div class="form-group">
+        <input id="tbChat" type="text"  class="form-control" placeholder="Chat" onclick="showChat()">
     </div>
 </div>
 
 
+
 <footer class="panel-footer">
-    <a href="https://chat-blog.skyway.io">Blog</a>
-    <a href="/info/help">How to Use</a>
-    <a href="/info/terms">Terms of Service</a>
+
+    <button type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-facetime-video"></span>
+    </button>
+
 </footer>
-
-
-<script src="./js/jquery-2.1.1.js"></script>
-<script src="./js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="./css/bootstrap.min.css" />
-
-<script src="./js/jquery-ui.min.js" ></script>
-<link rel="stylesheet" href="./css/jquery-ui.min.css" />
-<link rel="stylesheet" href="./css/index.css"/>
 
 <script>
     $(function() {
-        $(function() {
-            $( ".video" ).draggable();
-        });
+        $( ".video" ).draggable({ containment: "parent" });
+        $( ".subVideo" ).draggable({ containment: ".mainVideo" });
     });
+
+    function hideChat(){
+        $("#chatContent").hide();
+    }
+    function showChat(){
+        $("#chatContent").show();
+    }
 </script>
-
-<style>
-    #content{
-        min-height: 532px;
-    }
-
-    .navbar{
-    }
-
-    .video{
-        max-width: 1920px;
-        min-width: 320px;
-    }
-
-    .img-responsive
-    {
-        width: 100%;
-        border: 1px solid white;
-    }
-    .subVideo{
-        width: 30%;
-        margin-top: -15%;
-        float: right;
-    }
-
-    .controls{
-        display: inline-flex;
-        margin-left: 15px;
-    }
-    .panel-footer{
-        position: fixed;
-        bottom: 0px;
-        left: 0px;
-    }
-</style>
 
 </body>
 </html>
