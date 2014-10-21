@@ -1,26 +1,25 @@
-
+var connection;
+var onMessageCallbacks = {};
+var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+var role;
     // setup signaling channel
     //connection.connect();
 
 $(document).ready(function(){
-    var connection;
-    var onMessageCallbacks = {};
-    var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
-    var role;
 
-//    var select = document.querySelector('select');
-//    var button = document.getElementById('continuous');
     if(typeof roomName !== 'undefined' && roomName !== '') {
         if(typeof newRoom !== 'undefined' && newRoom === 'yes')
             role = 'Room Moderator';
         else role = 'Broadcaster';
 
         connection = new RTCMultiConnection(roomName);
+        connection.fakeDataChannels = true;
 
         // easiest way to customize what you need!
         connection.session = {
             audio: true,
             video: true,
+            data: true,
             oneway: role === 'Anonymous Viewer'
         };
 
@@ -29,9 +28,6 @@ $(document).ready(function(){
             console.log('______ openSignalingChannel');
 
             var channel = config.channel || this.channel;
-            console.log('>> this.channel: ', this.channel);
-            console.log('>> channel: ', channel);
-
 
             var sender = Math.round(Math.random() * 9999999999) + 9999999999;
             console.log('channel: ', channel);
@@ -59,6 +55,34 @@ $(document).ready(function(){
 
             socket.on('message', config.onmessage);
         };
+
+        connection.onmessage = function(e){
+            var liElement = '<li class="list-group-item">'+ e.data +'</li>';
+            $('#chatList').append($(liElement));
+            console.log('>> has just received e: ', e);
+        }
+
+        //====== send message
+        $(document).keypress(function(e) {
+            if(e.which == 13) {//check if enter was hit
+                var tbChat = $('#tbChat');
+                var message = tbChat.val();
+                if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focused
+
+                    var liElement = '<li class="list-group-item list-group-item-info">'+ message +'</li>';
+                    $('#chatList').append($(liElement));
+
+                    connection.send(message);
+                    tbChat.val('');
+                }
+            }
+        });
+
+        connection.onopen = function(e){
+            // e.userid
+            // e.extra
+            console.log('onOpen', e);
+        }
 
         // on getting local or remote media stream
         connection.onstream = function (e) {
@@ -122,5 +146,9 @@ $(document).ready(function(){
             console.log('______connection.isInitiator: ', connection.isInitiator);
             connection.join(connection.channel);
         }
+
+        connection.onerror = function(e) {
+            console.log('>>> Error: ', e);
+        };
     }
 });

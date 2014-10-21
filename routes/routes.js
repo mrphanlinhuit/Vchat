@@ -15,7 +15,7 @@ module.exports = function(app){
 
     app.route('/newroom')
         .get(function(req, res, next){
-
+            res.render('chat');
         })
         .post(function(req, res, next){
             console.log('>> create new room: ', req.body);
