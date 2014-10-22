@@ -41,11 +41,6 @@
             width: 100%;
             border: 1px solid #ffffff;
         }
-        .subVideo{
-            width: 30%;
-            margin-top: -15%;
-            float: right;
-        }
 
         .controls{
             float: right;
@@ -95,7 +90,7 @@
     <script type="text/javascript" src="./js/functions.js"></script>
 
     <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/jquery-ui.min.js" ></script>
+
 
 </head>
 <body>
@@ -210,11 +205,10 @@
 
 </footer>
 
+<script src="./js/jquery-ui.min.js" ></script>
+
 <script>
-    $(function() {
-        $( ".video" ).draggable({ containment: "parent" });
-        $( ".subVideo" ).draggable({ containment: ".mainVideo" });
-    });
+
 
     function hideChat(){
         $("#chatContent").hide();
@@ -223,6 +217,8 @@
         $("#chatContent").show();
     }
 </script>
+
+
 
 </body>
 </html>

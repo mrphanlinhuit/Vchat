@@ -137,6 +137,7 @@ $(document).ready(function(){
                     dontShareWith: e.userid
                 });
             }
+            $( ".video" ).draggable({ containment: "parent" });
         };
 
         // onNewSession can be fired multiple times for same session
