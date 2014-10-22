@@ -1,6 +1,6 @@
 var connection;
 var onMessageCallbacks = {};
-var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
+var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
 var role;
 var customvideo;
     // setup signaling channel
@@ -114,7 +114,7 @@ $(document).ready(function(){
                 eVideo.attr('src', e.blobURL);
                 eDiv.append(eVideo);
                 $('#content').append(eDiv);
-                customvideo = eDiv;
+                $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
 
                 console.log('_____ evideo: ', eVideo);
                 console.log('_____e.blobURL: ', e.blobURL);
