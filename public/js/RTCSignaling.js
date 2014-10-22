@@ -1,10 +1,12 @@
 var connection;
 var onMessageCallbacks = {};
-var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
+//var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+
 var role;
-var customvideo;
-    // setup signaling channel
-    //connection.connect();
+// onNewSession can be fired multiple times for same session
+// to handle such issues; storing session-ids in an object
+var sessions = { };
 
 $(document).ready(function(){
 
@@ -14,8 +16,6 @@ $(document).ready(function(){
         else role = 'Broadcaster';
 
         connection = new RTCMultiConnection(roomName);
-        connection.fakeDataChannels = true;
-
         // easiest way to customize what you need!
         connection.session = {
             audio: true,
@@ -28,10 +28,8 @@ $(document).ready(function(){
         connection.openSignalingChannel = function (config) {
             console.log('______ openSignalingChannel');
 
-            var channel = config.channel || this.channel;
-
+            var channel = config.channel || this.channel;//channel is same sessionid
             var sender = Math.round(Math.random() * 9999999999) + 9999999999;
-            console.log('channel: ', channel);
 
             io.connect(SIGNALING_SERVER).emit('new-channel', {
                 channel: channel,
@@ -61,7 +59,10 @@ $(document).ready(function(){
         connection.onmessage = function(e){
             var liElement = '<li class="list-group-item">'+ e.data +'</li>';
             $('#chatList').append($(liElement));
-            console.log('>> has just received e: ', e);
+            $('#chatList').animate({
+                scrollTop: $('#chatList li:last-child').offset().top() + 'px'
+            }, 1000);
+            document.getElementById('chatSoundEffect').play();
         }
 
         //====== send message
@@ -73,6 +74,11 @@ $(document).ready(function(){
 
                     var liElement = '<li class="list-group-item list-group-item-info">'+ message +'</li>';
                     $('#chatList').append($(liElement));
+                    $('#chatList').animate({
+                        scrollTop: $('#chatList li:last-child').offset().top + 'px'
+                    }, 1000);
+
+                    console.log('offset: ', $('#chatList li:last-child').offset());
 
                     connection.send(message);
                     tbChat.val('');
@@ -110,15 +116,11 @@ $(document).ready(function(){
                                 '</div>'+
                             '</div>';
                 var eDiv = $(sDiv);
-                var eVideo = $('<video class="img img-responsive" autoplay width="640" height="480"></video>');
+                var eVideo = $('<video class="img img-responsive" autoplay width="640" height="480" controls muted></video>');
                 eVideo.attr('src', e.blobURL);
                 eDiv.append(eVideo);
                 $('#content').append(eDiv);
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
-
-                console.log('_____ evideo: ', eVideo);
-                console.log('_____e.blobURL: ', e.blobURL);
-                console.log('_____add stream: ', e);
             }
             if (e.type === 'remote' && role === 'Anonymous Viewer') {
                 // because "viewer" joined room as "oneway:true"
@@ -137,12 +139,8 @@ $(document).ready(function(){
                     dontShareWith: e.userid
                 });
             }
-            $( ".video" ).draggable({ containment: "parent" });
         };
 
-        // onNewSession can be fired multiple times for same session
-        // to handle such issues; storing session-ids in an object
-        var sessions = { };
         // "onNewSession" is called as soon as signaling channel transmits session details
         connection.onNewSession = function (session) {
             console.log('______ onNewSession');
@@ -163,14 +161,13 @@ $(document).ready(function(){
 //                    session.join({screen: true});             // join session while allowing only screen
 //                    session.join({audio: true, video: true}); // join session while allowing both audio and video
 //                     session.join({oneway: true}); // to join with no stream!
+
         };
 
         if (role === 'Room Moderator') {
-            console.log('______connection.isInitiator: ', connection.isInitiator);
-            connection.open(connection.channel);
+            var sessionDescription = connection.open(connection.channel);
         }
         else {
-            console.log('______connection.isInitiator: ', connection.isInitiator);
             connection.join(connection.channel);
         }
 

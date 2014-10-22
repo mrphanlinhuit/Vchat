@@ -109,7 +109,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><img src="./images/logo.png" alt="WebRTC Chat on SkyWay" id="logo"></li>
+                <li><a href="/"><img src="./images/logo.png" alt="WebRTC Chat on SkyWay" id="logo"></a></li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Chọn<span class="caret"></span></a>
@@ -151,28 +151,7 @@
 </nav>
 
 <div id="content">
-    <!--<div class="video">-->
-            <!--&lt;!&ndash;<video controls class="img img-responsive mainVideo" src="#" > </video>&ndash;&gt;-->
-            <!--&lt;!&ndash;<video controls class="img img-responsive subVideo" src="#" width="200"></video>&ndash;&gt;-->
-
-        <!--<div class="controls">-->
-            <!--<div class="form-group">-->
-                <!--<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >-->
-                    <!--<span class="glyphicon glyphicon-zoom-in"></span>-->
-                <!--</button>-->
-                <!--<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >-->
-                    <!--<span class="glyphicon glyphicon-zoom-out"></span>-->
-                <!--</button>-->
-                <!--<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >-->
-                    <!--<span class="glyphicon glyphicon-sd-video"></span>-->
-                <!--</button>-->
-                <!--<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >-->
-                    <!--<span class="glyphicon glyphicon-hd-video"></span>-->
-                <!--</button>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-
+    <!--videos element are here-->
 </div>
 <div id="chatBox">
     <div id="chatContent">
@@ -193,6 +172,10 @@
     <div class="form-group">
         <input id="tbChat" type="text"  class="form-control" placeholder="Chat" onclick="showChat()">
     </div>
+    <audio id="chatSoundEffect" hidden="true">
+        <source src="soundeffects/knocking_on_single_pane_glass_window_x_3.mp3" type="audio/mpeg" >
+        Your browser does not support the audio element.
+    </audio>
 </div>
 
 
@@ -208,11 +191,6 @@
 <script src="./js/jquery-ui.min.js" ></script>
 
 <script>
-<<<<<<< HEAD
-=======
-
-
->>>>>>> a620645768b52838c6e41a007f79286c78bb1e1f
     function hideChat(){
         $("#chatContent").hide();
     }
