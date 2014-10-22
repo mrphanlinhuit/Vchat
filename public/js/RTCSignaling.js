@@ -1,7 +1,8 @@
 var connection;
 var onMessageCallbacks = {};
-var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
 var role;
+var customvideo;
     // setup signaling channel
     //connection.connect();
 
@@ -56,6 +57,7 @@ $(document).ready(function(){
             socket.on('message', config.onmessage);
         };
 
+        //====== reveice message from peer
         connection.onmessage = function(e){
             var liElement = '<li class="list-group-item">'+ e.data +'</li>';
             $('#chatList').append($(liElement));
@@ -86,13 +88,37 @@ $(document).ready(function(){
 
         // on getting local or remote media stream
         connection.onstream = function (e) {
-            console.log('______ onStream');
-            console.log('______e.type: ', e.type);
 
             if (e.type === 'local' && role === 'Anonymous Viewer');
             else {
-                document.getElementById('videos').appendChild(e.mediaElement);
-                console.log('_____add stream');
+                var sDiv = '<div class="video">' +
+                                '<div class="controls">'+
+                                    '<div class="form-group">'+
+                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
+                                            '<span class="glyphicon glyphicon-zoom-in"></span>'+
+                                        '</button>'+
+                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
+                                            '<span class="glyphicon glyphicon-zoom-out"></span>'+
+                                        '</button>'+
+                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
+                                            '<span class="glyphicon glyphicon-sd-video"></span>'+
+                                        '</button>'+
+                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
+                                            '<span class="glyphicon glyphicon-hd-video"></span>'+
+                                        '</button>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>';
+                var eDiv = $(sDiv);
+                var eVideo = $('<video class="img img-responsive" autoplay width="640" height="480"></video>');
+                eVideo.attr('src', e.blobURL);
+                eDiv.append(eVideo);
+                $('#content').append(eDiv);
+                customvideo = eDiv;
+
+                console.log('_____ evideo: ', eVideo);
+                console.log('_____e.blobURL: ', e.blobURL);
+                console.log('_____add stream: ', e);
             }
             if (e.type === 'remote' && role === 'Anonymous Viewer') {
                 // because "viewer" joined room as "oneway:true"
