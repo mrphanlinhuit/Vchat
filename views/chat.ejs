@@ -24,6 +24,7 @@
         #content{
             min-height: 532px;
             height: 87%;
+            padding-top: 0px;
         }
 
         .navbar{
@@ -33,7 +34,7 @@
         .video{
             max-width: 1920px;
             min-width: 320px;
-            width: 60%;
+            width: 50%;
         }
 
         .img-responsive
@@ -44,38 +45,44 @@
 
         .controls{
             float: right;
-            /*margin-bottom: -100px;*/
+            margin-bottom: -100px;
         }
 
-        .controls:hover{
-            z-index: inherit;
-        }
+
 
         .panel-footer{
             position: fixed;
-            bottom: 0px;
-            left: 0px;
-            padding: 0px;
+            bottom: 0;
+            left: 0;
+            padding: 0;
         }
         #chatBox{
-            max-height: 60%;
-            max-width: 405px;
-            min-width: 300px;
+            width: 350px;
+            height: 405px;
             position: fixed;
-            bottom: -14px;
-            right: 20%;
+            bottom: 0;
             z-index: 100000;
+            right: 20%;
         }
         #chatList{
-            height: 300px;
+            min-height: 50px;
+            height: 340px;
             overflow: scroll;
             width: 100%;
-            margin-bottom: 0px;
+            margin-bottom: 0;
+            background: #ffffff;
             /*display: none;*/
         }
         #tbChat{
-            width: 305px;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
 
+        }
+
+        #chatList ul p{
+            width: 100%;
+            overflow: visible;
         }
         #hideChat{
             float: right;

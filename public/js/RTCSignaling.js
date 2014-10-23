@@ -72,7 +72,7 @@ $(document).ready(function(){
                 var message = tbChat.val();
                 if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focused
 
-                    var liElement = '<li class="list-group-item list-group-item-info">'+ message +'</li>';
+                    var liElement = '<p class="list-group-item list-group-item-info">'+ message +'</p>';
                     $('#chatList').append($(liElement));
                     $('#chatList').animate({
                         scrollTop: $('#chatList li:last-child').offset().top + 'px'
