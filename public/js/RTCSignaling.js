@@ -89,7 +89,7 @@ $(document).ready(function(){
         connection.onopen = function(e){
             // e.userid
             // e.extra
-            console.log('onOpen', e);
+            console.log('_____onOpen', e);
         }
 
         // on getting local or remote media stream
@@ -117,10 +117,12 @@ $(document).ready(function(){
                             '</div>';
                 var eDiv = $(sDiv);
                 var eVideo = $('<video class="img img-responsive" autoplay width="640" height="480" controls muted></video>');
-                eVideo.attr('src', e.blobURL);
+                eVideo.attr({'src': e.blobURL, 'id': e.streamid});
                 eDiv.append(eVideo);
                 $('#content').append(eDiv);
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
+
+//                alert('streamId ' + e.streamid + ' has just joined');
             }
             if (e.type === 'remote' && role === 'Anonymous Viewer') {
                 // because "viewer" joined room as "oneway:true"
@@ -140,6 +142,13 @@ $(document).ready(function(){
                 });
             }
         };
+
+        //======= when remote user closed the stream
+        connection.onstreamended = function(e){
+            $('#'+ e.streamid).remove();
+            connection.peers[e.userid].drop(); //This method allows you drop call same like skype! It removes all media stream from both users' sides
+            alert('streamId ' + e.streamid + ' has just left');
+        }
 
         // "onNewSession" is called as soon as signaling channel transmits session details
         connection.onNewSession = function (session) {
@@ -171,8 +180,13 @@ $(document).ready(function(){
             connection.join(connection.channel);
         }
 
-        connection.onerror = function(e) {
-            console.log('>>> Error: ', e);
+        connection.onerror = function(err) {
+            console.log('_____Error: ', err);
         };
+
+        //===== "onMediaError" event is fired if getUserMedia request is failed
+        connection.onMediaError = function(err){
+            console.log('_____onMediaError: ', err);
+        }
     }
 });
