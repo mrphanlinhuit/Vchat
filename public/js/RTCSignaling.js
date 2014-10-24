@@ -55,6 +55,44 @@ $(document).ready(function(){
             socket.on('message', config.onmessage);
         };
 
+<<<<<<< HEAD
+=======
+        //====== reveice message from peer
+        connection.onmessage = function(e){
+            var liElement = '<div class="dialog">'+
+                             '<p>'+ e.data +'</p>'+
+                             '</div>';
+            $('#chatList').append($(liElement));
+            $('#chatList').animate({
+                scrollTop: $('#chatList li:last-child').offset().top() + 'px'
+            }, 1000);
+            document.getElementById('chatSoundEffect').play();
+        }
+
+        //====== send message
+        $(document).keypress(function(e) {
+            if(e.which == 13) {//check if enter was hit
+                var tbChat = $('#tbChat');
+                var message = tbChat.val();
+                if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focused
+
+                    var liElement = '<div class="dialog">'+
+                                    '<p>'+ message +'</p>'+
+                                    '</div>';
+                    $('#chatList').append($(liElement));
+                    $('#chatList').animate({
+                        scrollTop: $('#chatList li:last-child').offset().top + 'px'
+                    }, 1000);
+
+                    console.log('offset: ', $('#chatList li:last-child').offset());
+
+                    connection.send(message);
+                    tbChat.val('');
+                }
+            }
+        });
+
+>>>>>>> ac9ce5c5b9d6b34219b2a45092d912340d8407e2
         connection.onopen = function(e){
             // e.userid
             // e.extra
@@ -87,14 +125,23 @@ $(document).ready(function(){
                                 '</div>'+
                             '</div>';
                 var eDiv = $(sDiv);
+<<<<<<< HEAD
                 var eVideo = $('<video class="img img-responsive" autoplay controls muted></video>');
+=======
+                var eVideo = $('<video class="img img-responsive" autoplay width="480" height="320" controls muted></video>');
+>>>>>>> ac9ce5c5b9d6b34219b2a45092d912340d8407e2
                 eVideo.attr({'src': e.blobURL, 'id': e.streamid});
                 eDiv.append(eVideo);
                 $('#content').append(eDiv);
 
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
+<<<<<<< HEAD
                 videoElementEvent();
 
+=======
+                $( ".video").resizable();
+                $(".dialog").dialog();
+>>>>>>> ac9ce5c5b9d6b34219b2a45092d912340d8407e2
 //                alert('streamId ' + e.streamid + ' has just joined');
             }
             if (e.type === 'remote' && role === 'Anonymous Viewer') {
