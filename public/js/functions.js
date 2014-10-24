@@ -1,3 +1,43 @@
+
+function SendPostRequest(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+            console.log('key: ', key);
+            console.log('params: ', params[key]);
+            form.appendChild(hiddenField);
+        }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+//=== process video event which a users click on buttons
+function videoElementEvent(){
+//    mute a video-only stream
+    $('#muteVideo').click(function(){
+        alert('mute video');
+        var streamId = $(this).parent().next().attr('id');
+        connection.streams[streamId].mute({video: true, local: true});
+    });
+
+//    unmute a video-only stream
+    $('#unmuteVideo').click(function(){
+        alert('unmute video');
+        var streamId = $(this).parent().next().attr('id');
+        connection.streams[streamId].unmute({video:true, local: true});
+    });
+}
+
 /**
  *  MD5 (Message-Digest Algorithm)
  *  http://www.webtoolkit.info/
@@ -216,26 +256,3 @@
 
         return temp.toLowerCase();
     }
-
-function SendPostRequest(path, params, method) {
-    method = method || "post"; // Set method to post by default if not specified.
-
-    var form = document.createElement("form");
-    form.setAttribute("method", method);
-    form.setAttribute("action", path);
-
-    for(var key in params) {
-        if(params.hasOwnProperty(key)) {
-            var hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", key);
-            hiddenField.setAttribute("value", params[key]);
-            console.log('key: ', key);
-            console.log('params: ', params[key]);
-            form.appendChild(hiddenField);
-        }
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-}

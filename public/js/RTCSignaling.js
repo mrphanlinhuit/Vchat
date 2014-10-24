@@ -55,37 +55,6 @@ $(document).ready(function(){
             socket.on('message', config.onmessage);
         };
 
-        //====== reveice message from peer
-        connection.onmessage = function(e){
-            var liElement = '<li class="list-group-item">'+ e.data +'</li>';
-            $('#chatList').append($(liElement));
-            $('#chatList').animate({
-                scrollTop: $('#chatList li:last-child').offset().top() + 'px'
-            }, 1000);
-            document.getElementById('chatSoundEffect').play();
-        }
-
-        //====== send message
-        $(document).keypress(function(e) {
-            if(e.which == 13) {//check if enter was hit
-                var tbChat = $('#tbChat');
-                var message = tbChat.val();
-                if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focused
-
-                    var liElement = '<p class="list-group-item list-group-item-info">'+ message +'</p>';
-                    $('#chatList').append($(liElement));
-                    $('#chatList').animate({
-                        scrollTop: $('#chatList li:last-child').offset().top + 'px'
-                    }, 1000);
-
-                    console.log('offset: ', $('#chatList li:last-child').offset());
-
-                    connection.send(message);
-                    tbChat.val('');
-                }
-            }
-        });
-
         connection.onopen = function(e){
             // e.userid
             // e.extra
@@ -97,7 +66,7 @@ $(document).ready(function(){
 
             if (e.type === 'local' && role === 'Anonymous Viewer');
             else {
-                var sDiv = '<div class="video">' +
+                var sDiv = '<div class="video" ' +
                                 '<div class="controls">'+
                                     '<div class="form-group">'+
                                         '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
@@ -112,15 +81,19 @@ $(document).ready(function(){
                                         '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
                                             '<span class="glyphicon glyphicon-hd-video"></span>'+
                                         '</button>'+
+                                        '<button id="muteVideo">Mute Video</button>'+
+                                        '<button id="unmuteVideo">Unmute Video</button>'+
                                     '</div>'+
                                 '</div>'+
                             '</div>';
                 var eDiv = $(sDiv);
-                var eVideo = $('<video class="img img-responsive" autoplay width="640" height="480" controls muted></video>');
+                var eVideo = $('<video class="img img-responsive" autoplay controls muted></video>');
                 eVideo.attr({'src': e.blobURL, 'id': e.streamid});
                 eDiv.append(eVideo);
                 $('#content').append(eDiv);
+
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
+                videoElementEvent();
 
 //                alert('streamId ' + e.streamid + ' has just joined');
             }
@@ -188,5 +161,43 @@ $(document).ready(function(){
         connection.onMediaError = function(err){
             console.log('_____onMediaError: ', err);
         }
-    }
+
+        //====== send message
+        $(document).keypress(function(e) {
+            if(e.which == 13) {//check if enter was hit
+                var tbChat = $('#tbChat');
+                var message = tbChat.val();
+                if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focused
+
+                    var liElement = '<li class="list-group-item list-group-item-info">'+ message +'</li>';
+                    $('#chatList').append($(liElement));
+                    $('#chatList').animate({
+                        scrollTop: $('#chatList li:last-child').offset().top + 'px'
+                    }, 1000);
+
+                    connection.send(message);
+                    tbChat.val('');
+                }
+            }
+        });
+
+        //====== reveice message from peer
+        connection.onmessage = function(e){
+            var liElement = '<li class="list-group-item">'+ e.data +'</li>';
+            $('#chatList').append($(liElement));
+            $('#chatList').animate({
+                scrollTop: $('#chatList li:last-child').offset().top + 'px'
+            }, 1000);
+            document.getElementById('chatSoundEffect').play();
+        }
+
+        connection.onmute = function(e){
+            $('#'+ e.streamid).attr('poster', 'images/nomovie.jpg');
+        }
+
+        connection.onunmute = function(e){
+            $('#'+ e.streamid).removeAttr('poster');
+        }
+    }// End if
+
 });
