@@ -1,7 +1,7 @@
 var connection;
 var onMessageCallbacks = {};
-var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
-//var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+//var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
+var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
 
 var role;
 // onNewSession can be fired multiple times for same session
@@ -22,6 +22,11 @@ $(document).ready(function(){
             video: true,
             data: true,
             oneway: role === 'Anonymous Viewer'
+        };
+
+        connection.sdpConstraints.mandatory = {
+            OfferToReceiveAudio: true,
+            OfferToReceiveVideo: true
         };
 
         // overriding "openSignalingChannel" method
@@ -55,44 +60,13 @@ $(document).ready(function(){
             socket.on('message', config.onmessage);
         };
 
-<<<<<<< HEAD
-=======
-        //====== reveice message from peer
-        connection.onmessage = function(e){
-            var liElement = '<div class="dialog">'+
-                             '<p>'+ e.data +'</p>'+
-                             '</div>';
-            $('#chatList').append($(liElement));
-            $('#chatList').animate({
-                scrollTop: $('#chatList li:last-child').offset().top() + 'px'
-            }, 1000);
-            document.getElementById('chatSoundEffect').play();
-        }
-
-        //====== send message
-        $(document).keypress(function(e) {
-            if(e.which == 13) {//check if enter was hit
-                var tbChat = $('#tbChat');
-                var message = tbChat.val();
-                if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focused
-
-                    var liElement = '<div class="dialog">'+
-                                    '<p>'+ message +'</p>'+
-                                    '</div>';
-                    $('#chatList').append($(liElement));
-                    $('#chatList').animate({
-                        scrollTop: $('#chatList li:last-child').offset().top + 'px'
-                    }, 1000);
-
-                    console.log('offset: ', $('#chatList li:last-child').offset());
-
-                    connection.send(message);
-                    tbChat.val('');
-                }
+        connection.getDevices(function (devices) {
+            for(var device in devices){
+                device = devices[device];
+                console.log('device: ', device);
             }
         });
 
->>>>>>> ac9ce5c5b9d6b34219b2a45092d912340d8407e2
         connection.onopen = function(e){
             // e.userid
             // e.extra
@@ -101,6 +75,7 @@ $(document).ready(function(){
 
         // on getting local or remote media stream
         connection.onstream = function (e) {
+            console.log('_____onstream: ', e);
 
             if (e.type === 'local' && role === 'Anonymous Viewer');
             else {
@@ -121,27 +96,25 @@ $(document).ready(function(){
                                         '</button>'+
                                         '<button id="muteVideo">Mute Video</button>'+
                                         '<button id="unmuteVideo">Unmute Video</button>'+
+                                        '<button id="muteAudio">Mute Audio</button>'+
+                                        '<button id="unmuteAudio">Unmute Audio</button>'+
                                     '</div>'+
                                 '</div>'+
                             '</div>';
                 var eDiv = $(sDiv);
-<<<<<<< HEAD
+
                 var eVideo = $('<video class="img img-responsive" autoplay controls muted></video>');
-=======
                 var eVideo = $('<video class="img img-responsive" autoplay width="480" height="320" controls muted></video>');
->>>>>>> ac9ce5c5b9d6b34219b2a45092d912340d8407e2
                 eVideo.attr({'src': e.blobURL, 'id': e.streamid});
                 eDiv.append(eVideo);
                 $('#content').append(eDiv);
 
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
-<<<<<<< HEAD
                 videoElementEvent();
 
-=======
                 $( ".video").resizable();
                 $(".dialog").dialog();
->>>>>>> ac9ce5c5b9d6b34219b2a45092d912340d8407e2
+
 //                alert('streamId ' + e.streamid + ' has just joined');
             }
             if (e.type === 'remote' && role === 'Anonymous Viewer') {
@@ -204,10 +177,23 @@ $(document).ready(function(){
             console.log('_____Error: ', err);
         };
 
+        connection.onlog = function(log){
+            var div = $('div');
+           div.html(JSON.stringify(log, null, ''));
+            $('#divLog').append(div);
+        }
+
         //===== "onMediaError" event is fired if getUserMedia request is failed
         connection.onMediaError = function(err){
             console.log('_____onMediaError: ', err);
         }
+
+        $('#sharingScreen').click(function(){
+            alert('share screen');
+            connection.addStream({
+                screen: true
+            });
+        });
 
         //====== send message
         $(document).keypress(function(e) {
@@ -239,12 +225,23 @@ $(document).ready(function(){
         }
 
         connection.onmute = function(e){
-            $('#'+ e.streamid).attr('poster', 'images/nomovie.jpg');
+            if(e.isVideo){
+                $('#'+ e.streamid).attr('poster', 'images/nomovie.jpg');
+            }else{
+                alert('mute audio');
+            }
+            console.log('____e: ', e);
         }
 
         connection.onunmute = function(e){
-            $('#'+ e.streamid).removeAttr('poster');
+            if(e.isVideo){
+                $('#'+ e.streamid).removeAttr('poster');
+            }else{
+                alert('unmute audio');
+            }
+            console.log('____e: ', e);
         }
+
     }// End if
 
 });

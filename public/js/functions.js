@@ -36,6 +36,18 @@ function videoElementEvent(){
         var streamId = $(this).parent().next().attr('id');
         connection.streams[streamId].unmute({video:true, local: true});
     });
+
+    $('#muteAudio').click(function(){
+        alert('mute audio');
+        var streamId = $(this).parent().next().attr('id');
+        connection.streams[streamId].mute({audio: true, local:true});
+    });
+
+    $('#unmuteAudio').click(function(){
+        alert('unmute audio');
+        var streamId = $(this).parent().next().attr('id');
+        connection.streams[streamId].unmute({audio:true, local:true});
+    });
 }
 
 /**
