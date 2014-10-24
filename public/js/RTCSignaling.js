@@ -57,7 +57,9 @@ $(document).ready(function(){
 
         //====== reveice message from peer
         connection.onmessage = function(e){
-            var liElement = '<li class="list-group-item">'+ e.data +'</li>';
+            var liElement = '<div class="dialog">'+
+                             '<p>'+ e.data +'</p>'+
+                             '</div>';
             $('#chatList').append($(liElement));
             $('#chatList').animate({
                 scrollTop: $('#chatList li:last-child').offset().top() + 'px'
@@ -72,7 +74,9 @@ $(document).ready(function(){
                 var message = tbChat.val();
                 if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focused
 
-                    var liElement = '<p class="list-group-item list-group-item-info">'+ message +'</p>';
+                    var liElement = '<div class="dialog">'+
+                                    '<p>'+ message +'</p>'+
+                                    '</div>';
                     $('#chatList').append($(liElement));
                     $('#chatList').animate({
                         scrollTop: $('#chatList li:last-child').offset().top + 'px'
@@ -116,12 +120,13 @@ $(document).ready(function(){
                                 '</div>'+
                             '</div>';
                 var eDiv = $(sDiv);
-                var eVideo = $('<video class="img img-responsive" autoplay width="640" height="480" controls muted></video>');
+                var eVideo = $('<video class="img img-responsive" autoplay width="480" height="320" controls muted></video>');
                 eVideo.attr({'src': e.blobURL, 'id': e.streamid});
                 eDiv.append(eVideo);
                 $('#content').append(eDiv);
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
-
+                $( ".video").resizable();
+                $(".dialog").dialog();
 //                alert('streamId ' + e.streamid + ' has just joined');
             }
             if (e.type === 'remote' && role === 'Anonymous Viewer') {
