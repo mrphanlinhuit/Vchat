@@ -1,7 +1,7 @@
 var connection;
 var onMessageCallbacks = {};
-//var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
-var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
+//var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
 
 var role;
 // onNewSession can be fired multiple times for same session
@@ -202,10 +202,25 @@ $(document).ready(function(){
                 var message = tbChat.val();
                 if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focused
 
-                    var liElement = '<li class="list-group-item list-group-item-info">'+ message +'</li>';
+                    var liElement = '<div class="popover left">' +
+                        '<div class="arrow"></div>' +
+                        '<div class="popover-content">' +
+                        '<p>' + message + '</p>' +
+                        '</div>' +
+                        '</div>';
+                    var eMessage =$('<div class="popover right popup">' +
+                        '<div class="arrow"></div>' +
+                        '<div class="popover-content">' +
+                        '<p>' + message + '</p>' +
+                        '</div>' +
+                        '</div>');
                     $('#chatList').append($(liElement));
+                    $('.video').append(eMessage);
+                    setTimeout(function() {
+                        $( ".popup" ).removeAttr( "style" ).hide();
+                    }, 6000 );
                     $('#chatList').animate({
-                        scrollTop: $('#chatList li:last-child').offset().top + 'px'
+                        scrollTop: $('#chatList .popover:last-child').offset().top + 'px'
                     }, 1000);
 
                     connection.send(message);
@@ -216,10 +231,16 @@ $(document).ready(function(){
 
         //====== reveice message from peer
         connection.onmessage = function(e){
-            var liElement = '<li class="list-group-item">'+ e.data +'</li>';
+
+            var liElement = '<div class="popover right">' +
+                '<div class="arrow"></div>' +
+                '<div class="popover-content">' +
+                '<p>' + e.data + '</p>' +
+                '</div>' +
+                '</div>';
             $('#chatList').append($(liElement));
             $('#chatList').animate({
-                scrollTop: $('#chatList li:last-child').offset().top + 'px'
+                scrollTop: $('#chatList .popover:last-child').offset().top() + 'px'
             }, 1000);
             document.getElementById('chatSoundEffect').play();
         }

@@ -88,6 +88,17 @@
             float: right;
             margin-top: -30px;
         }
+        .popover {
+            position: relative;
+            display: block;
+            margin: 20px;
+        }
+        .popover.left{
+            margin-left: 40px;
+        }
+        .popover.right.popup{
+            float: right;
+        }
     </style>
 
     <script src="./js/jquery-2.1.1.js"></script>
@@ -171,12 +182,10 @@
                 <span class="glyphicon glyphicon-remove"></span>
             </button>
         </a>
-        <ul class="list-group" id="chatList">
+        <div id="chatList">
 
-            <li class="list-group-item list-group-item-info" >Hello</li>
-            <li class="list-group-item">Hi</li>
-            <li class="list-group-item list-group-item-info">Morbi leo risus</li>
-        </ul>
+
+        </div>
     </div>
 
     <div class="form-group">
