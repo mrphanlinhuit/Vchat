@@ -1,7 +1,7 @@
 var connection;
 var onMessageCallbacks = {};
 var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
-//var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+//var SIGNALING_SERVER = 'http://192.168.21.1:8080/';
 
 var role;
 // onNewSession can be fired multiple times for same session
@@ -79,20 +79,21 @@ $(document).ready(function(){
 
             if (e.type === 'local' && role === 'Anonymous Viewer');
             else {
-                var sDiv = '<div class="video" ' +
+                var sDiv = '<div class="video" id= '+ '"'+e.userid +'"' +
                                 '<div class="controls">'+
                                     '<div class="form-group">'+
-                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
-                                            '<span class="glyphicon glyphicon-zoom-in"></span>'+
-                                        '</button>'+
-                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
-                                            '<span class="glyphicon glyphicon-zoom-out"></span>'+
-                                        '</button>'+
+
                                         '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
                                             '<span class="glyphicon glyphicon-sd-video"></span>'+
                                         '</button>'+
                                         '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
                                             '<span class="glyphicon glyphicon-hd-video"></span>'+
+                                        '</button>'+
+                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
+                                        '<span class="glyphicon glyphicon-facetime-video"></span>'+
+                                        '</button>'+
+                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
+                                        '<span class="glyphicon glyphicon-microphone"></span>'+
                                         '</button>'+
                                         '<button id="muteVideo">Mute Video</button>'+
                                         '<button id="unmuteVideo">Unmute Video</button>'+
@@ -106,9 +107,9 @@ $(document).ready(function(){
                 var eVideo = $('<video class="img img-responsive" autoplay controls muted></video>');
                 var eVideo = $('<video class="img img-responsive" autoplay width="480" height="320" controls muted></video>');
                 eVideo.attr({'src': e.blobURL, 'id': e.streamid});
+
                 eDiv.append(eVideo);
                 $('#content').append(eDiv);
-
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
                 videoElementEvent();
 
@@ -200,27 +201,34 @@ $(document).ready(function(){
             if(e.which == 13) {//check if enter was hit
                 var tbChat = $('#tbChat');
                 var message = tbChat.val();
-                if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focused
-
+                if(tbChat.is(document.activeElement) && message !== ''){//check to see if tbChat is focus
                     var liElement = '<div class="popover left">' +
                         '<div class="arrow"></div>' +
                         '<div class="popover-content">' +
                         '<p>' + message + '</p>' +
                         '</div>' +
                         '</div>';
-                    var eMessage =$('<div class="popover right popup">' +
+                    var eMessage =$('<div class="popover top popup">' +
                         '<div class="arrow"></div>' +
                         '<div class="popover-content">' +
                         '<p>' + message + '</p>' +
                         '</div>' +
                         '</div>');
-                    $('#chatList').append($(liElement));
-                    $('.video').append(eMessage);
+                    $('#chatList').append(liElement);
+
+                    if($( ".popup").is(":visible"))
+                    {
+                        $( ".popup").remove();
+                    }
+
+                    $('#'+ connection.userid).append(eMessage);
                     setTimeout(function() {
                         $( ".popup" ).removeAttr( "style" ).hide();
-                    }, 6000 );
+                    }, 60000 );
+
+
                     $('#chatList').animate({
-                        scrollTop: $('#chatList .popover:last-child').offset().top + 'px'
+                        scrollTop: $('#chatList .popover.left:last-child').offset().top + 'px'
                     }, 1000);
 
                     connection.send(message);
@@ -238,10 +246,25 @@ $(document).ready(function(){
                 '<p>' + e.data + '</p>' +
                 '</div>' +
                 '</div>';
-            $('#chatList').append($(liElement));
+            var eMessage =$('<div class="popover top popup">' +
+                '<div class="arrow"></div>' +
+                '<div class="popover-content">' +
+                '<p>' + e.data + '</p>' +
+                '</div>' +
+                '</div>');
+            $('#chatList').append(liElement);
+
             $('#chatList').animate({
-                scrollTop: $('#chatList .popover:last-child').offset().top() + 'px'
+                scrollTop: $('#chatList .popover:last-child').offset().top + 'px'
             }, 1000);
+            if($( ".popup").is(":visible"))
+            {
+                $( ".popup").remove();
+            }
+            $('#'+e.userid).append(eMessage);
+            setTimeout(function() {
+                $( ".popup" ).removeAttr( "style" ).hide();
+            }, 60000 );
             document.getElementById('chatSoundEffect').play();
         }
 
