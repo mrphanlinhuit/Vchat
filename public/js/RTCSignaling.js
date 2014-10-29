@@ -79,26 +79,26 @@ $(document).ready(function(){
 
             if (e.type === 'local' && role === 'Anonymous Viewer');
             else {
-                var sDiv = '<div class="video" id= '+ '"'+e.userid +'"' +
+                var sDiv = '<div class="video" id= '+e.userid+' >'+
                                 '<div class="controls">'+
                                     '<div class="form-group">'+
 
-                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
-                                            '<span class="glyphicon glyphicon-sd-video"></span>'+
+                                        '<button class="btn btn-default">'+
+                                            '<span class="glyphicon glyphicon-glyph-191"></span>'+
                                         '</button>'+
-                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
-                                            '<span class="glyphicon glyphicon-hd-video"></span>'+
+                                        '<button class="btn btn-default" >'+
+                                            '<span class="glyphicon glyphicon-glyph-192"></span>'+
                                         '</button>'+
-                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
-                                        '<span class="glyphicon glyphicon-facetime-video"></span>'+
+                                        '<button id="muteVideo" class="btn btn-default">'+
+                                        '<span  class="glyphicon glyphicon-videocam-5"></span>'+
                                         '</button>'+
-                                        '<button class="btn btn-default" data-toggle="modal" data-target="#loginModal" >'+
-                                        '<span class="glyphicon glyphicon-microphone"></span>'+
+                                        '<button id="muteAudio" class="btn btn-default">'+
+                                        '<span class="glyphicon glyphicon-mic-4"></span>'+
                                         '</button>'+
-                                        '<button id="muteVideo">Mute Video</button>'+
-                                        '<button id="unmuteVideo">Unmute Video</button>'+
-                                        '<button id="muteAudio">Mute Audio</button>'+
-                                        '<button id="unmuteAudio">Unmute Audio</button>'+
+                                        '<button id="muteAudio" class="btn btn-default">'+
+                                        '<span class="glyphicon glyphicon-glyph-138"></span>'+
+                                        '</button>'+
+
                                     '</div>'+
                                 '</div>'+
                             '</div>';

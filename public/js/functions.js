@@ -24,29 +24,46 @@ function SendPostRequest(path, params, method) {
 //=== process video event which a users click on buttons
 function videoElementEvent(){
 //    mute a video-only stream
+    var muteVideo = false;
+    var muteMusic = false;
+
     $('#muteVideo').click(function(){
-        alert('mute video');
-        var streamId = $(this).parent().next().attr('id');
-        connection.streams[streamId].mute({video: true, local: true});
+        var streamId = $(this).parent().parent().next().attr('id');
+        if(!muteVideo)
+        {
+            alert('mute video');
+
+            connection.streams[streamId].mute({video: true, local: true});
+            muteVideo=true;
+            $(this).children().attr('class','glyphicon glyphicon-file-video');
+        }
+        else{
+            alert('unmute video');
+            connection.streams[streamId].unmute({video:true, local: true});
+            muteVideo = false;
+            $(this).children().attr('class','glyphicon glyphicon-videocam-5');
+        }
+
     });
 
-//    unmute a video-only stream
-    $('#unmuteVideo').click(function(){
-        alert('unmute video');
-        var streamId = $(this).parent().next().attr('id');
-        connection.streams[streamId].unmute({video:true, local: true});
-    });
 
     $('#muteAudio').click(function(){
-        alert('mute audio');
-        var streamId = $(this).parent().next().attr('id');
-        connection.streams[streamId].mute({audio: true, local:true});
-    });
+        var streamId = $(this).parent().parent().next().attr('id');
+        if(!muteMusic){
+            alert('mute audio');
 
-    $('#unmuteAudio').click(function(){
-        alert('unmute audio');
-        var streamId = $(this).parent().next().attr('id');
-        connection.streams[streamId].unmute({audio:true, local:true});
+            connection.streams[streamId].mute({audio: true, local:true});
+            muteMusic = true;
+            $(this).children().attr('class','glyphicon glyphicon-mic-off');
+        }
+        else
+        {
+            alert('unmute audio');
+            connection.streams[streamId].unmute({audio:true, local:true});
+            muteMusic = false;
+            $(this).children().attr('class','glyphicon glyphicon-mic-4');
+        }
+
     });
 }
 
