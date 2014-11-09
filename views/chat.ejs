@@ -36,6 +36,7 @@
             max-width: 1920px;
             min-width: 320px;
             width: 35%;
+            position: relative;
         }
 
         .img-responsive
@@ -47,11 +48,17 @@
         .controls{
             float: right;
             margin-bottom: 0px;
+            position: absolute;
+            top: 5px; right: 5px;
         }
 
         .controls button{
             margin-right:10px;
+            background:transparent;
+            border: none;
         }
+
+        .controls button:hover{background: #ffffff;}
 
 
         .panel-footer{

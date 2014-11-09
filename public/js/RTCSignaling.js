@@ -1,7 +1,7 @@
 var connection;
 var onMessageCallbacks = {};
-var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
-//var SIGNALING_SERVER = 'http://192.168.21.1:8080/';
+//var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
+var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
 
 var role;
 // onNewSession can be fired multiple times for same session
@@ -79,15 +79,15 @@ $(document).ready(function(){
 
             if (e.type === 'local' && role === 'Anonymous Viewer');
             else {
-                var sDiv = '<div class="video" id= '+e.userid+' >'+
-                                '<div class="controls">'+
+                var $divVideo = $('<div class="video" id= '+e.userid+' >' + '</div>');
+                var $divControls = $('<div class="controls">'+
                                     '<div class="form-group">'+
 
                                         '<button class="btn btn-default">'+
-                                            '<span class="glyphicon glyphicon-glyph-191"></span>'+
+                                        '<span class="glyphicon glyphicon-glyph-191"></span>'+
                                         '</button>'+
                                         '<button class="btn btn-default" >'+
-                                            '<span class="glyphicon glyphicon-glyph-192"></span>'+
+                                        '<span class="glyphicon glyphicon-glyph-192"></span>'+
                                         '</button>'+
                                         '<button id="muteVideo" class="btn btn-default">'+
                                         '<span  class="glyphicon glyphicon-videocam-5"></span>'+
@@ -100,16 +100,13 @@ $(document).ready(function(){
                                         '</button>'+
 
                                     '</div>'+
-                                '</div>'+
-                            '</div>';
-                var eDiv = $(sDiv);
+                                '</div>');
+                var $eVideo = $('<video class="img img-responsive" autoplay width="480" height="320" controls muted></video>');
+                $eVideo.attr({'src': e.blobURL, 'id': e.streamid});
 
-                var eVideo = $('<video class="img img-responsive" autoplay controls muted></video>');
-                var eVideo = $('<video class="img img-responsive" autoplay width="480" height="320" controls muted></video>');
-                eVideo.attr({'src': e.blobURL, 'id': e.streamid});
-
-                eDiv.append(eVideo);
-                $('#content').append(eDiv);
+                $divVideo.append($eVideo);
+                $divVideo.append($divControls);
+                $('#content').append($divVideo);
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
                 videoElementEvent();
 
