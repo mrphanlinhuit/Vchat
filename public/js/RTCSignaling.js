@@ -1,8 +1,12 @@
 var connection;
 var onMessageCallbacks = {};
 //var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
+<<<<<<< HEAD
 //var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
 var SIGNALING_SERVER = 'http://192.168.21.103:8080/';
+=======
+var SIGNALING_SERVER = 'http://192.168.21.1:8080/';
+>>>>>>> 754392031ad8dda46a9c515f4d698124025e9c8b
 
 var role;
 // onNewSession can be fired multiple times for same session
@@ -128,7 +132,7 @@ $(document).ready(function(){
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
                 videoElementEvent();
 
-                $( ".video").resizable();
+                $( ".video").resizable({ handles: "n, e, s, w"});
                 $(".dialog").dialog();
 
 //                alert('streamId ' + e.streamid + ' has just joined');
