@@ -1,7 +1,7 @@
 var connection;
 var onMessageCallbacks = {};
 //var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
-var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+var SIGNALING_SERVER = 'http://192.168.21.1:8080/';
 
 var role;
 // onNewSession can be fired multiple times for same session
@@ -110,7 +110,7 @@ $(document).ready(function(){
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
                 videoElementEvent();
 
-                $( ".video").resizable();
+                $( ".video").resizable({ handles: "n, e, s, w"});
                 $(".dialog").dialog();
 
 //                alert('streamId ' + e.streamid + ' has just joined');

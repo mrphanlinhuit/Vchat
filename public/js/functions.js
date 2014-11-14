@@ -27,6 +27,8 @@ function videoElementEvent(){
     var muteVideo = false;
     var muteMusic = false;
 
+
+
     $('#muteVideo').click(function(){
         var streamId = $(this).parent().parent().next().attr('id');
         if(!muteVideo)
@@ -65,6 +67,14 @@ function videoElementEvent(){
         }
 
     });
+
+
+    $(".video").click(function(){
+        $(".video").each(function (){
+            $(this).css('z-index','100');
+        })
+        $(this).css('z-index','10000');
+    })
 }
 
 /**
