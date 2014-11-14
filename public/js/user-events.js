@@ -100,4 +100,11 @@ function videoElementEvent(){
         }
 
     });
+
+    $(".video").click(function(){
+        $(".video").each(function (){
+            $(this).css('z-index','100');
+        })
+        $(this).css('z-index','10000');
+    })
 }
