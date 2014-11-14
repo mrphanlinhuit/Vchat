@@ -1,7 +1,8 @@
 var connection;
 var onMessageCallbacks = {};
 //var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
-var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+//var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
+var SIGNALING_SERVER = 'http://192.168.21.103:8080/';
 
 var role;
 // onNewSession can be fired multiple times for same session
@@ -16,6 +17,13 @@ $(document).ready(function(){
         else role = 'Broadcaster';
 
         connection = new RTCMultiConnection(roomName);
+
+        // www.rtcmulticonnection.org/docs/sdpConstraints/
+        connection.sdpConstraints.mandatory = {
+            OfferToReceiveAudio: true,
+            OfferToReceiveVideo: true
+        };
+
         // easiest way to customize what you need!
         connection.session = {
             audio: true,
@@ -24,9 +32,19 @@ $(document).ready(function(){
             oneway: role === 'Anonymous Viewer'
         };
 
-        connection.sdpConstraints.mandatory = {
-            OfferToReceiveAudio: true,
-            OfferToReceiveVideo: true
+        connection.mediaConstraints.mandatory = {
+            minWidth: 320,
+            maxWidth: 640,
+            minHeight: 180,
+            maxHeight: 480,
+            minFrameRate: 24
+        };
+
+        connection.bandwidth = {
+            audio: 50,
+            video: 512,
+            data: 1638400,
+            screen: 300      // 300kbps
         };
 
         // overriding "openSignalingChannel" method
@@ -83,20 +101,20 @@ $(document).ready(function(){
                 var $divControls = $('<div class="controls">'+
                                     '<div class="form-group">'+
 
-                                        '<button class="btn btn-default">'+
-                                        '<span class="glyphicon glyphicon-glyph-191"></span>'+
+                                        '<button id="sdDisplay" class="btn btn-default">'+
+                                            '<span class="glyphicon glyphicon-glyph-191"></span>'+
                                         '</button>'+
-                                        '<button class="btn btn-default" >'+
-                                        '<span class="glyphicon glyphicon-glyph-192"></span>'+
+                                        '<button id="hdDisplay" class="btn btn-default" >'+
+                                            '<span class="glyphicon glyphicon-glyph-192"></span>'+
                                         '</button>'+
                                         '<button id="muteVideo" class="btn btn-default">'+
-                                        '<span  class="glyphicon glyphicon-videocam-5"></span>'+
+                                            '<span  class="glyphicon glyphicon-videocam-5"></span>'+
                                         '</button>'+
                                         '<button id="muteAudio" class="btn btn-default">'+
-                                        '<span class="glyphicon glyphicon-mic-4"></span>'+
+                                            '<span class="glyphicon glyphicon-mic-4"></span>'+
                                         '</button>'+
                                         '<button id="muteAudio" class="btn btn-default">'+
-                                        '<span class="glyphicon glyphicon-glyph-138"></span>'+
+                                            '<span class="glyphicon glyphicon-glyph-138"></span>'+
                                         '</button>'+
 
                                     '</div>'+
@@ -114,6 +132,7 @@ $(document).ready(function(){
                 $(".dialog").dialog();
 
 //                alert('streamId ' + e.streamid + ' has just joined');
+                console.log('_______ add streamId: ', e.streamid);
             }
             if (e.type === 'remote' && role === 'Anonymous Viewer') {
                 // because "viewer" joined room as "oneway:true"
@@ -134,12 +153,21 @@ $(document).ready(function(){
             }
         };
 
+        connection.onaddstream = function(e){
+            console.log('__________onaddstream: ', e);
+        }
+
         //======= when remote user closed the stream
         connection.onstreamended = function(e){
-            $('#'+ e.streamid).remove();
+            $('#'+ e.streamid).parent().remove();
             connection.peers[e.userid].drop(); //This method allows you drop call same like skype! It removes all media stream from both users' sides
-            alert('streamId ' + e.streamid + ' has just left');
+            console.log('____________streamId ' + e.streamid + ' has just left');
         }
+
+        // "ondrop" is fired; if media-connection is droppped by other user
+        connection.ondrop = function(e) {
+            console.log('_____ondrop streamid: ', e);
+        };
 
         // "onNewSession" is called as soon as signaling channel transmits session details
         connection.onNewSession = function (session) {
@@ -185,13 +213,6 @@ $(document).ready(function(){
         connection.onMediaError = function(err){
             console.log('_____onMediaError: ', err);
         }
-
-        $('#sharingScreen').click(function(){
-            alert('share screen');
-            connection.addStream({
-                screen: true
-            });
-        });
 
         //====== send message
         $(document).keypress(function(e) {

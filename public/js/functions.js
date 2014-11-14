@@ -23,48 +23,7 @@ function SendPostRequest(path, params, method) {
 }
 //=== process video event which a users click on buttons
 function videoElementEvent(){
-//    mute a video-only stream
-    var muteVideo = false;
-    var muteMusic = false;
 
-    $('#muteVideo').click(function(){
-        var streamId = $(this).parent().parent().next().attr('id');
-        if(!muteVideo)
-        {
-            alert('mute video');
-
-            connection.streams[streamId].mute({video: true, local: true});
-            muteVideo=true;
-            $(this).children().attr('class','glyphicon glyphicon-file-video');
-        }
-        else{
-            alert('unmute video');
-            connection.streams[streamId].unmute({video:true, local: true});
-            muteVideo = false;
-            $(this).children().attr('class','glyphicon glyphicon-videocam-5');
-        }
-
-    });
-
-
-    $('#muteAudio').click(function(){
-        var streamId = $(this).parent().parent().next().attr('id');
-        if(!muteMusic){
-            alert('mute audio');
-
-            connection.streams[streamId].mute({audio: true, local:true});
-            muteMusic = true;
-            $(this).children().attr('class','glyphicon glyphicon-mic-off');
-        }
-        else
-        {
-            alert('unmute audio');
-            connection.streams[streamId].unmute({audio:true, local:true});
-            muteMusic = false;
-            $(this).children().attr('class','glyphicon glyphicon-mic-4');
-        }
-
-    });
 }
 
 /**
