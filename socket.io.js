@@ -16,6 +16,8 @@ module.exports = function(server){
     var channels = {};
 
     io.sockets.on('connection', function (socket) {
+        console.log('someone has connected');
+
         var initiatorChannel = '';
         if (!io.isConnected) {
             io.isConnected = true;
@@ -44,6 +46,7 @@ module.exports = function(server){
 
     function onNewNamespace(channel, sender) {
         io.of('/' + channel).on('connection', function (socket) {
+            console.log('created new namespace');
             var username;
             if (io.isConnected) {
                 io.isConnected = false;

@@ -1,9 +1,11 @@
+/**
+ * Created by linh on 19/12/2014.
+ */
+
 var connection;
 var onMessageCallbacks = {};
-//var SIGNALING_SERVER = 'http://127.0.0.1:8080/';
-//var SIGNALING_SERVER = 'http://10.42.0.1:8080/';
-var SIGNALING_SERVER = 'http://192.168.21.103:8080/';
-//var SIGNALING_SERVER = 'http://192.168.21.1:8080/';
+var SIGNALING_SERVER = window.location.origin;
+
 
 var role;
 // onNewSession can be fired multiple times for same session
@@ -60,7 +62,7 @@ $(document).ready(function(){
                 sender: sender
             });
 
-            var socket = io.connect(SIGNALING_SERVER + channel);
+            var socket = io.connect(SIGNALING_SERVER +'/'+ channel);
             socket.channel = channel;
 
             socket.on('connect', function () {
@@ -100,32 +102,32 @@ $(document).ready(function(){
             else {
                 var $divVideo = $('<div class="video" id= '+e.userid+' >' + '</div>');
                 var $divControls = $('<div class="controls">'+
-                                    '<div class="form-group">'+
+                    '<div class="form-group">'+
 
-                                        '<button id="sdDisplay" class="btn btn-default">'+
-                                            '<span class="glyphicon glyphicon-glyph-191"></span>'+
-                                        '</button>'+
-                                        '<button id="hdDisplay" class="btn btn-default" >'+
-                                            '<span class="glyphicon glyphicon-glyph-192"></span>'+
-                                        '</button>'+
-                                        '<button id="muteVideo" class="btn btn-default">'+
-                                            '<span  class="glyphicon glyphicon-videocam-5"></span>'+
-                                        '</button>'+
-                                        '<button id="muteAudio" class="btn btn-default">'+
-                                            '<span class="glyphicon glyphicon-mic-4"></span>'+
-                                        '</button>'+
-                                        '<button id="muteAudio" class="btn btn-default">'+
-                                            '<span class="glyphicon glyphicon-glyph-138"></span>'+
-                                        '</button>'+
+                    '<button id="sdDisplay" class="btn btn-default">'+
+                    '<span class="glyphicon glyphicon-glyph-191"></span>'+
+                    '</button>'+
+                    '<button id="hdDisplay" class="btn btn-default" >'+
+                    '<span class="glyphicon glyphicon-glyph-192"></span>'+
+                    '</button>'+
+                    '<button id="muteVideo" class="btn btn-default">'+
+                    '<span  class="glyphicon glyphicon-videocam-5"></span>'+
+                    '</button>'+
+                    '<button id="muteAudio" class="btn btn-default">'+
+                    '<span class="glyphicon glyphicon-mic-4"></span>'+
+                    '</button>'+
+                    '<button id="muteAudio" class="btn btn-default">'+
+                    '<span class="glyphicon glyphicon-glyph-138"></span>'+
+                    '</button>'+
 
-                                    '</div>'+
-                                '</div>');
-                var $eVideo = $('<video class="img img-responsive" autoplay width="480" height="320" controls muted></video>');
+                    '</div>'+
+                    '</div>');
+                var $eVideo = $('<video class="img img-responsive" autoplay width="640" height="480" controls muted></video>');
                 $eVideo.attr({'src': e.blobURL, 'id': e.streamid});
 
                 $divVideo.append($eVideo);
                 $divVideo.append($divControls);
-                $('#content').append($divVideo);
+                $('#content').prepend($divVideo);
                 $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
                 videoElementEvent();
 
@@ -206,7 +208,7 @@ $(document).ready(function(){
 
         connection.onlog = function(log){
             var div = $('div');
-           div.html(JSON.stringify(log, null, ''));
+            div.html(JSON.stringify(log, null, ''));
             $('#divLog').append(div);
         }
 

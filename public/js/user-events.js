@@ -1,6 +1,12 @@
 /**
+ * Created by linh on 19/12/2014.
+ */
+
+/**
  * Created by linh on 13/11/2014.
  */
+
+
 
 
 function videoElementEvent(){
@@ -9,7 +15,6 @@ function videoElementEvent(){
     var muteMusic = false;
 
     $('#hdDisplay').click(function(){
-        alert('hd display');
         var streamId = $(this).parent().parent().parent().children('video').attr('id');
         $('#'+streamId).parent().remove();
         console.log('______remove StreamId: ', streamId);
@@ -33,7 +38,6 @@ function videoElementEvent(){
     });
 
     $('#sdDisplay').click(function(){
-        alert('sd display');
         console.log('*****************************************************************************');
         var streamId = $(this).parent().parent().parent().children('video').attr('id');
 //        $('#'+streamId).parent().remove();
@@ -57,23 +61,29 @@ function videoElementEvent(){
     });
 
     $('#sharingScreen').click(function(){
-        alert('share screen');
         console.log('___________screen sharing log here');
-        connection.addStream({screen:true, oneway: true});
+        connection.addStream({
+            screen: true,
+            oneway: true
+        });
+    });
+
+    $('#stopSharingScreen').click(function(){
+        connection.removeStream({
+            screen: true,  // it will remove all screen streams
+            stop: true     // ask to stop old stream
+        });
     });
 
     $('#muteVideo').click(function(){
         var streamId = $(this).parent().parent().parent().children('video').attr('id');
         if(!muteVideo)
         {
-            alert('mute video');
-
             connection.streams[streamId].mute({video: true, local: true});
             muteVideo=true;
             $(this).children().attr('class','glyphicon glyphicon-file-video');
         }
         else{
-            alert('unmute video');
             connection.streams[streamId].unmute({video:true, local: true});
             muteVideo = false;
             $(this).children().attr('class','glyphicon glyphicon-videocam-5');
@@ -85,7 +95,6 @@ function videoElementEvent(){
     $('#muteAudio').click(function(){
         var streamId = $(this).parent().parent().parent().children('video').attr('id');
         if(!muteMusic){
-            alert('mute audio');
 
             connection.streams[streamId].mute({audio: true, local:true});
             muteMusic = true;
@@ -93,7 +102,6 @@ function videoElementEvent(){
         }
         else
         {
-            alert('unmute audio');
             connection.streams[streamId].unmute({audio:true, local:true});
             muteMusic = false;
             $(this).children().attr('class','glyphicon glyphicon-mic-4');
