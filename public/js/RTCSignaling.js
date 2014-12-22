@@ -1,11 +1,6 @@
-/**
- * Created by linh on 19/12/2014.
- */
-
 var connection;
 var onMessageCallbacks = {};
 var SIGNALING_SERVER = window.location.origin;
-
 
 var role;
 // onNewSession can be fired multiple times for same session
@@ -54,10 +49,12 @@ $(document).ready(function(){
         connection.openSignalingChannel = function (config) {
             console.log('______ openSignalingChannel');
 
+            console.log('______ openSignalingChannel');
+
             var channel = config.channel || this.channel;//channel is same sessionid
             var sender = Math.round(Math.random() * 9999999999) + 9999999999;
 
-            io.connect(SIGNALING_SERVER).emit('new-channel', {
+            var public = io.connect(SIGNALING_SERVER).emit('new-channel', {
                 channel: channel,
                 sender: sender
             });
@@ -100,39 +97,54 @@ $(document).ready(function(){
 
             if (e.type === 'local' && role === 'Anonymous Viewer');
             else {
-                var $divVideo = $('<div class="video" id= '+e.userid+' >' + '</div>');
-                var $divControls = $('<div class="controls">'+
-                    '<div class="form-group">'+
 
-                    '<button id="sdDisplay" class="btn btn-default">'+
-                    '<span class="glyphicon glyphicon-glyph-191"></span>'+
-                    '</button>'+
-                    '<button id="hdDisplay" class="btn btn-default" >'+
-                    '<span class="glyphicon glyphicon-glyph-192"></span>'+
-                    '</button>'+
-                    '<button id="muteVideo" class="btn btn-default">'+
-                    '<span  class="glyphicon glyphicon-videocam-5"></span>'+
-                    '</button>'+
-                    '<button id="muteAudio" class="btn btn-default">'+
-                    '<span class="glyphicon glyphicon-mic-4"></span>'+
-                    '</button>'+
-                    '<button id="muteAudio" class="btn btn-default">'+
-                    '<span class="glyphicon glyphicon-glyph-138"></span>'+
-                    '</button>'+
+                var $divVideo = $('<div class="col-sm-4 col-md-4">'+
+                                        '<div class="wow fadeInLeft" data-wow-delay="0.2s">'+
+                                            '<div class="service-box">'+
+                                                
+                                                    // Video Div
+                                                '<div class="video" id= '+e.userid+'>'+
 
-                    '</div>'+
-                    '</div>');
-                var $eVideo = $('<video class="img img-responsive" autoplay width="640" height="480" controls muted></video>');
+                                                    //Control div
+                                                    '<div class="controls">'+
+                                                        '<div class="form-group">'+
+                                                            '<button id="sdDisplay" class="btn btn-default">'+
+                                                                '<i class="fa fa-comment-o"></i>'+
+                                                            '</button>'+
+                                                            '<button id="hdDisplay" class="btn btn-default" >'+
+                                                                '<i class="fa fa-bell"></i>'+
+                                                            '</button>'+
+                                                            '<button id="muteVideo" class="btn btn-default">'+
+                                                                '<i class="fa fa-video-camera"></i>'+
+                                                            '</button>'+
+                                                            '<button id="muteAudio" class="btn btn-default">'+
+                                                                '<i class="fa fa-microphone"></i>'+
+                                                            '</button>'+
+
+                                                        '</div>'+
+                                                    '</div>'+
+
+                                                    //Video Tag
+                                                    '<video class="img img-responsive" autoplay width="640" height="480" src='+e.blobURL+' id='+e.streamid+' controls muted></video>'+
+                                               ' </div>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</div>');       
+
+                
+                //var $divVideo = $('<div class="video" id= '+e.userid+' >' + '</div>');
+               /* var $eVideo = $('<video class="img img-responsive" autoplay width="480" height="320" controls muted></video>');
                 $eVideo.attr({'src': e.blobURL, 'id': e.streamid});
 
                 $divVideo.append($eVideo);
-                $divVideo.append($divControls);
-                $('#content').prepend($divVideo);
-                $( ".video" ).draggable({ containment: "parent" });//allow video element can drag and drop
+                $divVideo.append($divControls);*/
+                $('#videoEle').append($divVideo);
+
+                $( ".video" ).draggable({ containment: "#chatarea" });//allow video element can drag and drop
                 videoElementEvent();
 
-                $( ".video").resizable({ handles: "n, e, s, w"});
-                $(".dialog").dialog();
+                $( ".video").resizable({ handles: "n, e, s, w",
+                                        aspectRatio: 4 / 3});
 
 //                alert('streamId ' + e.streamid + ' has just joined');
                 console.log('_______ add streamId: ', e.streamid);
@@ -208,7 +220,7 @@ $(document).ready(function(){
 
         connection.onlog = function(log){
             var div = $('div');
-            div.html(JSON.stringify(log, null, ''));
+           div.html(JSON.stringify(log, null, ''));
             $('#divLog').append(div);
         }
 

@@ -14,6 +14,7 @@ module.exports = function(server){
     ]);
 
     var channels = {};
+    var initiators = {};
 
     io.sockets.on('connection', function (socket) {
         console.log('someone has connected');
@@ -22,49 +23,67 @@ module.exports = function(server){
         if (!io.isConnected) {
             io.isConnected = true;
         }
-
         socket.on('new-channel', function (data) {
             if (!channels[data.channel]) {
+                initiators[socket.id] = data.channel;
                 initiatorChannel = data.channel;
+                console.log('####### initiatorChannel: ', initiatorChannel);
+            }else{
+                socket.emit('existed');
             }
-
             channels[data.channel] = data.channel;
-            onNewNamespace(data.channel, data.sender);
+            onNewNamespace(data.channel, socket.id);
+            console.log('### channels: ', channels);
         });
 
         socket.on('presence', function (channel) {
             var isChannelPresent = !! channels[channel];
-            socket.emit('presence', isChannelPresent);
+            if(isChannelPresent)
+                socket.emit('room-existed');
+            if(!isChannelPresent)
+                socket.emit('room-available');
+            console.log('check room either exists or not', isChannelPresent);
         });
 
         socket.on('disconnect', function (channel) {
-            if (initiatorChannel) {
-                delete channels[initiatorChannel];
+            if(initiators[socket.id]){
+                console.log('initiator disconnected');
+                delete channels[initiators[socket.id]];
+                delete initiators[socket.id];
+            }else{
+                console.log('user has just disconnected: ', socket.id);
             }
+            if (initiatorChannel) {
+//                delete channels[initiatorChannel];
+            }
+
         });
     });
 
     function onNewNamespace(channel, sender) {
         io.of('/' + channel).on('connection', function (socket) {
-            console.log('created new namespace');
-            var username;
+            console.log('created new namespace', sender);
+            var roomOwner = sender;
             if (io.isConnected) {
                 io.isConnected = false;
                 socket.emit('connect', true);
             }
 
             socket.on('message', function (data) {
-                if (data.sender === sender) {
-                    if(!username) username = data.data.sender;
+                if (socket.id === sender) {
+                    if(!roomOwner) roomOwner = socket.id;
 
                     socket.broadcast.emit('message', data.data);
                 }
             });
 
             socket.on('disconnect', function() {
-                if(username) {
-                    socket.broadcast.emit('user-left', username);
-                    username = null;
+                if(roomOwner && socket.id !== roomOwner) {
+                    socket.broadcast.emit('user-left');
+                }
+                if(roomOwner && socket.id === roomOwner){
+                    socket.broadcast.emit('owner-left');
+                    roomOwner = null;
                 }
             });
         });

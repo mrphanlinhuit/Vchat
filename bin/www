@@ -6,10 +6,10 @@ var io = require('../socket.io');
 
 //============ setup here
 app.set('port', process.env.PORT || 8080);
-//var https_server = https.createServer(options, app).listen(8080);
 
 
-////============ start server here
+
+//============ start server here
 var server = app.listen(app.get('port'), function() {
   console.log('The magic happens on port ' + server.address().port);
 });

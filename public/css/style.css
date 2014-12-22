@@ -810,8 +810,8 @@ Parallax
 }
 
 .video{
-    width: 640px;
-    height: 480px;
+    width: 400px;
+    height: 200px;
     border: 1px solid #000;
 }
 

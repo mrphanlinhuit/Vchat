@@ -5,35 +5,34 @@ module.exports = function(app){
     
     app.route('/')
         .get(function(req, res, next){
-            res.render('index2');//load the index.ejs file
+            res.render('index');//load the index.ejs file
         });
-
     app.route('/index')
         .get(function(req, res, next){
-            res.render('index2');
+            res.render('index');
         });
     
     app.route('/chat')
         .get(function(req, res, next){
-            res.render('chat2');
+            res.render('chat');
         });
 
     app.route('/newroom')
         .get(function(req, res, next){
-            res.render('chat2');
+            res.render('chat');
         })
         .post(function(req, res, next){
             console.log('>> create new room: ', req.body);
-            res.render('chat2', {data: req.body});
+            res.render('chat', {data: req.body});
         });
 
     app.route('/joinroom')
         .get(function(req, res, next){
-            res.render('index2');
+            res.render('index');
         })
         .post(function(req, res, next){
             console.log('>> join room: ', req.body);
-            res.render('chat2', {data: req.body});
+            res.render('chat', {data: req.body});
         });
 
     app.route('/multi')
