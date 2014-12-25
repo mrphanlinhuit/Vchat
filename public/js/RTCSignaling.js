@@ -1,7 +1,6 @@
 var connection;
 var onMessageCallbacks = {};
 var SIGNALING_SERVER = window.location.origin;
-
 var role;
 // onNewSession can be fired multiple times for same session
 // to handle such issues; storing session-ids in an object
@@ -49,17 +48,15 @@ $(document).ready(function(){
         connection.openSignalingChannel = function (config) {
             console.log('______ openSignalingChannel');
 
-            console.log('______ openSignalingChannel');
-
             var channel = config.channel || this.channel;//channel is same sessionid
             var sender = Math.round(Math.random() * 9999999999) + 9999999999;
 
-            var public = io.connect(SIGNALING_SERVER).emit('new-channel', {
+            io.connect(SIGNALING_SERVER).emit('new-channel', {
                 channel: channel,
                 sender: sender
             });
 
-            var socket = io.connect(SIGNALING_SERVER +'/'+ channel);
+            var socket = io.connect(SIGNALING_SERVER  +'/'+ channel);
             socket.channel = channel;
 
             socket.on('connect', function () {
@@ -125,7 +122,9 @@ $(document).ready(function(){
                                                     '</div>'+
 
                                                     //Video Tag
-                                                    '<video class="img img-responsive" autoplay width="640" height="480" src='+e.blobURL+' id='+e.streamid+' controls muted></video>'+
+                                                    '<video class="img img-responsive" autoplay width="640" height="480" src='+e.blobURL+' id='+e.streamid+' controls muted>'+
+                                                    
+                                                    '</video>'+
                                                ' </div>'+
                                             '</div>'+
                                         '</div>'+
@@ -259,10 +258,19 @@ $(document).ready(function(){
                         $( ".popup" ).removeAttr( "style" ).hide();
                     }, 60000 );
 
+                    var scroll = function(div) {
+                        var totalHeight = 0;
+                        div.find('.popover').each(function(){
+                           totalHeight += ($(this).outerHeight()+20);
+                        });
+                        div.scrollTop(totalHeight);
+                    }
+                    // call it:
+                    scroll($('#chatList'));
 
-                    $('#chatList').animate({
-                        scrollTop: $('#chatList .popover.left:last-child').offset().top + 'px'
-                    }, 1000);
+                    /*$('#chatList').animate({
+                        scrollTo: $('#chatList .popover:last-child')
+                    }, 1000);*/
 
                     connection.send(message);
                     tbChat.val('');
@@ -287,9 +295,16 @@ $(document).ready(function(){
                 '</div>');
             $('#chatList').append(liElement);
 
-            $('#chatList').animate({
-                scrollTop: $('#chatList .popover:last-child').offset().top + 'px'
-            }, 1000);
+            var scroll = function(div) {
+                var totalHeight = 0;
+                div.find('.popover').each(function(){
+                    totalHeight += ($(this).outerHeight()+20);
+                });
+                div.scrollTop(totalHeight);
+            }
+            // call it:
+            scroll($('#chatList'));
+
             if($( ".popup").is(":visible"))
             {
                 $( ".popup").remove();

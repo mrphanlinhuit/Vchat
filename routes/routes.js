@@ -11,7 +11,7 @@ module.exports = function(app){
         .get(function(req, res, next){
             res.render('index');
         });
-    
+
     app.route('/chat')
         .get(function(req, res, next){
             res.render('chat');
