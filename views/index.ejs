@@ -27,7 +27,7 @@
 
     <script>
         $(document).ready(function(){
-            var socket = io.connect(window.location.origin);
+            var socket = io.connect();
             var createNewRoom = $("#create_button");
             var joinRoom = $("#join_button");
 
@@ -73,7 +73,72 @@
                     joinRoom.removeAttr('disabled');
                     createNewRoom.removeAttr('disabled');
                 });
+            });
 
+            $('#btnContactUs').click(function(e){
+                if($('#name').val() !== '')
+                    var name = $('#name').val();
+                else{
+                    alert('the name was empty');
+                    $('#name').focus();
+                    return false;
+                }
+
+                if($('#email').val() !== '')
+                    var email = $('#email').val();
+                else{
+                    alert('email was empty');
+                    $('#email').focus();
+                    return false;
+                }
+
+                if($('#subject').val() !== '')
+                    var subject = $('#subject').val();
+                else{
+                    alert('the subject was empty');
+                    $('#subject').focus();
+                    return false;
+                }
+
+                if($('#message').val() !== '')
+                    var content = $('#message').val();
+                else{
+                    alert('the content was empty');
+                    $('#subject').focus();
+                    return false;
+                }
+
+                var honeyPot = $('#honeyPot').val();
+
+                $.post('/feedback',{
+                    name: name,
+                    email: email,
+                    subject: subject,
+                    content: content,
+                    honeyPot: honeyPot
+                }, function(data, status){
+                    switch (status){
+                        case 'success':
+                            alert('jquery ajax: status '+ status);
+                            break;
+                        case 'notmodified':
+                            alert('notmodified');
+                            break;
+                        case 'error':
+                            alert('some error happended');
+                            break;
+                        case 'timeout':
+                            alert('request was timeout');
+                            break;
+                        case 'parsererror':
+                            alert('parsererror');
+                            break;
+                        default :
+                            alert('unkown status');
+                    }
+                });
+
+                e.preventDefault();
             });
         });
     </script>
@@ -567,10 +632,11 @@
                                 Message</label>
                             <textarea name="message" id="message" class="form-control" rows="9" cols="25" required="required"
                                 placeholder="Message"></textarea>
+                            <input type="text" type="hidden" id="honeyPot" name="honeyPot"/>
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <button type="submit" class="btn btn-skin pull-right" id="btnContactUs">
+                        <button type="button" class="btn btn-skin pull-right" id="btnContactUs">
                             Send Message</button>
                     </div>
                 </div>

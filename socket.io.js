@@ -38,7 +38,6 @@ module.exports = function(server){
             onNewNamespace(data.channel, socket.id);
             console.log('#### roomId: ', socket.roomId);
             console.log('### channels: ', channels);
-            console.log('### users: ', users);
         });
 
         socket.on('presence', function (channel) {
