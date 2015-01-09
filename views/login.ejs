@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>VChat UIT</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="<%=data.host%>/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Fonts -->
+    <link href="<%=data.host%>/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="<%=data.host%>/css/animate.css" rel="stylesheet" />
+    <!-- Squad theme CSS -->
+    <link href="<%=data.host%>/css/style.css" rel="stylesheet">
+	<link href="<%=data.host%>/css/default.css" rel="stylesheet">
+
+
+    <!--javascrip create room-->
+    <script src="<%=data.host%>/js/jquery-2.1.3.min.js"></script>
+    <script src="<%=data.host%>/js/validateUserInput.js"></script>
+    <script type="text/javascript" src="<%=data.host%>/js/functions.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('[type="submit"]').click(function(e){
+                var email = $('[name="email"]').val();
+                if(email !== '' && validateEmail(email));
+                else{
+                    alert(email + ' is invalid');
+                    $('[name="email"]').focus();
+                    e.preventDefault();
+                    return false;
+                }
+
+                var password = $('[name="password"]').val();
+                if(password !== '');
+                else{
+                    alert(password + ' is invalid');
+                    $('[name="password"]').focus();
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-custom">
+
+	<!-- Section: intro -->
+    <section id="intro" class="intro">
+
+        <div class="row">
+            <div class="col-md-offset-0">
+                <div id="room_entry">
+                    <h2>admin</h2>
+                    <div><%if(data.message){%>
+                          <%=data.message%>
+                        <%}%></div>
+                    <form action="<%=data.host%>/admin/login" method="post">
+                        <div  class="form-inline">
+                            <p>
+                                <input type="text" id="tbUser" name="email" style="position: relative;right: 8%;" class="form-control tooltipstered"  placeholder="email" required="" autofocus="">
+
+                            </p>
+                        </div>
+
+
+
+                        <div  class="form-inline">
+                            <p>
+
+                                <input type="text" name="password" class="form-control tooltipstered" placeholder="password" required="" autofocus="">
+                                <input type="submit" class="btn btn-info btn-sm" id="join_button" value="Login" />
+                            </p>
+                        </div>
+                    </form>
+                </div>
+
+                <!--/create room-->
+            </div>
+        </div>
+
+
+
+
+    </section>
+	<!-- /Section: intro -->
+
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 col-lg-12">
+					<div class="wow shake" data-wow-delay="0.4s">
+					<div class="page-scroll marginbot-30">
+						<a href="#intro" id="totop" class="btn btn-circle">
+							<i class="fa fa-angle-double-up animated"></i>
+						</a>
+					</div>
+					</div>
+					<p>&copy;Copyright 2014 - VchatTeam. All rights reserved.</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+    <!-- Core JavaScript Files -->
+    <script src="<%=data.host%>/js/bootstrap.min.js"></script>
+    <script src="<%=data.host%>/js/jquery.easing.min.js"></script>
+	<script src="<%=data.host%>/js/jquery.scrollTo.js"></script>
+	<script src="<%=data.host%>/js/wow.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="<%=data.host%>/js/jquery.snow.js"></script>
+    <script>
+        $(document).ready( function(){
+                $.fn.snow();
+        });
+    </script>
+    <!--<script>
+        $(function() {
+            $( "#datepicker" ).datepicker();
+        });
+
+    </script>-->
+
+</body>
+
+</html>

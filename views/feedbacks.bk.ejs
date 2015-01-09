@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>feedbacks</title>
+    <script type="text/javascript" src="/js/jquery-2.1.3.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            var radio = $('[name="radio"]');
+            $('#add').click(function(e){
+                var id = radio.val();
+                if(id !== ''){
+
+                }else{
+                    alert('you didn\'t select any row');
+                    return false;
+                }
+            });
+
+            $('#delete').click(function(e){
+                var id = radio.val();
+                if(id !== ''){
+                    $.post('/admin/feedback/delete',{
+                                id: id
+                            }, function(data, status){
+                                switch (status){
+                                    case 'success':
+                                        alert('jquery ajax: status '+ status + ' **** data: '+ data);
+                                        $('#'+id).slideUp;
+                                        $('#'+id).remove();
+                                        break;
+                                    case 'notmodified':
+                                        alert('notmodified');
+                                        break;
+                                    case 'error':
+                                        alert('some error happended');
+                                        break;
+                                    case 'timeout':
+                                        alert('request was timeout');
+                                        break;
+                                    case 'parsererror':
+                                        alert('parsererror');
+                                        break;
+                                    default :
+                                        alert('unkown status');
+                                }
+                            }
+                    );
+                }else{
+                    alert('you didn\'t select any row');
+                    return false;
+                }
+            });
+
+            $('#update').click(function(e){
+                var id = radio.val();
+                if(id !== ''){
+
+                }else{
+                    alert('you didn\'t select any row');
+                    return false;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div>
+    <%if(data !== '' && data.feedbacks.length !== 0){
+        var feedbacks = data.feedbacks;%>
+    <table border="1 solid">
+        <tr>
+            <th></th>
+            <th>id</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>content</th>
+            <th>Date</th>
+        </tr>
+        <%for(i=0; i< feedbacks.length; i++){%>
+        <tr id="<%=feedbacks[i].id%>">
+            <td><input type="radio" name="radio" value="<%=feedbacks[i].id%>"/></td>
+            <td><%=feedbacks[i].id%></td>
+            <td><%=feedbacks[i].name%></td>
+            <td><%=feedbacks[i].email%></td>
+            <td><%=feedbacks[i].subject%></td>
+            <td><%=feedbacks[i].content%></td>
+            <td><%=feedbacks[i].date%></td>
+        </tr>
+        <%}%>
+    </table>
+    <button name="add" id="add">Add</button>
+    <button name="delete" id="delete">Delete</button>
+    <button name="update" id="update">Update</button>
+    <%}%>
+</div>
+
+<div>
+    <% var rowPerPage = 5;
+    var indexLimit = 2;
+            if(data!=='' && data.count >rowPerPage){
+        var count = data.count;
+        var pages = Math.round(count/rowPerPage);
+            for(i=0; i<pages; i++){
+            if(i >= indexLimit){%>
+    ...
+    <a href="?page=<%= pages-1 %>"><%=pages%></a>
+    <% break;}else{%>
+    <a href="?page=<%=i%>"><%=i+1%></a>
+    <%}
+    }
+    }
+    else{
+
+    }%>
+</div>
+
+</body>
+</html>

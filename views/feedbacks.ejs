@@ -3,7 +3,36 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>feedbacks</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>VChat UIT</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Fonts -->
+    <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/animate.css" rel="stylesheet" />
+    <!-- Squad theme CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/default.css" rel="stylesheet">
+    <link rel="stylesheet" href=" /css/bootstrap-table.min.css">
     <script type="text/javascript" src="/js/jquery-2.1.3.min.js"></script>
+
+    <script src="/js/bootstrap.min.js"></script>
+
+    <script src=" /js/bootstrap-table.min.js"></script>
+    <script src="/js/bootstrap-table-flatJSON.min.js"></script>
+
+    <div>
+        <%if(data !== '' && data.feedbacks.length !== 0){
+            var feedbacks = data.feedbacks;%>
+        <%}%>
+    </div>
+
 
     <script>
         $(document).ready(function(){
@@ -24,30 +53,30 @@
                 radio.val('');
                 if(id !== ''){
                     $.post('/admin/feedback/delete',{
-                            id: id
-                        }, function(data, status){
-                            switch (status){
-                                case 'success':
-                                    alert('jquery ajax: status '+ status + ' **** data: '+ data);
-                                    $('#'+id).slideUp;
-                                    $('#'+id).remove();
-                                    break;
-                                case 'notmodified':
-                                    alert('notmodified');
-                                    break;
-                                case 'error':
-                                    alert('some error happended');
-                                    break;
-                                case 'timeout':
-                                    alert('request was timeout');
-                                    break;
-                                case 'parsererror':
-                                    alert('parsererror');
-                                    break;
-                                default :
-                                    alert('unkown status');
+                                id: id
+                            }, function(data, status){
+                                switch (status){
+                                    case 'success':
+                                        alert('jquery ajax: status '+ status + ' **** data: '+ data);
+                                        $('#'+id).slideUp;
+                                        $('#'+id).remove();
+                                        break;
+                                    case 'notmodified':
+                                        alert('notmodified');
+                                        break;
+                                    case 'error':
+                                        alert('some error happended');
+                                        break;
+                                    case 'timeout':
+                                        alert('request was timeout');
+                                        break;
+                                    case 'parsererror':
+                                        alert('parsererror');
+                                        break;
+                                    default :
+                                        alert('unkown status');
+                                }
                             }
-                        }
                     );
                 }else{
                     alert('you didn\'t select any row');
@@ -64,60 +93,475 @@
                     return false;
                 }
             });
+
+            $('#pagFeedbacks a').click(function(e){
+                alert('click ');
+                var page = $(this).text() - 1;
+                console.log($(this).text());
+                $('#fb tbody ').slideUp(300);
+                $('#fb tbody tr').remove();
+                $.post('/admin/feedbacks',{
+                    page: page
+                }, function(data, status){
+                    switch (status){
+                        case 'success':
+                            if(data){
+                                console.log('jquery ajax: status '+ data);
+                                var str = '';
+                                for(i=0; i< data.length; i++){
+
+                                    str +=
+                                        '<tr id="'+ data[i]._id +'">' +
+                                            '<td><input type="checkbox"  value="'+ data[i]._id +'"/></td>'   +
+                                            '<td>'+ data[i]._id +'</td>'         +
+                                            '<td>'+ data[i].name +'</td>'       +
+                                            '<td>'+ data[i].email +'</td>'      +
+                                            '<td>'+ data[i].subject +'</td>'    +
+                                            '<td>'+ data[i].content +'</td>'    +
+                                            '<td>'+ data[i].date +'</td>'       +
+                                        '</tr>';
+                                }
+                                $('#fb tbody').append($(str));
+                                $('#fb tbody').slideDown(3000);
+                            }
+                            break;
+                        case 'notmodified':
+                            alert('notmodified');
+                            break;
+                        case 'error':
+                            alert('some error happended');
+                            break;
+                        case 'timeout':
+                            alert('request was timeout');
+                            break;
+                        case 'parsererror':
+                            alert('parsererror');
+                            break;
+                        default :
+                            alert('unkown status');
+                    }
+                });
+
+                e.preventDefault();
+                return false;
+            });
         });
     </script>
 </head>
 <body>
-    <div>
-        <%if(data !== '' && data.feedbacks.length !== 0){
-            var feedbacks = data.feedbacks;%>
-        <table border="1 solid">
-            <tr>
-                <th></th>
-                <th>id</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Subject</th>
-                <th>content</th>
-                <th>Date</th>
-            </tr>
-            <%for(i=0; i< feedbacks.length; i++){%>
-            <tr id="<%=feedbacks[i].id%>">
-                <td><input type="radio" name="radio" id="radio" value="<%=feedbacks[i].id%>"/></td>
-                <td><%=feedbacks[i].id%></td>
-                <td><%=feedbacks[i].name%></td>
-                <td><%=feedbacks[i].email%></td>
-                <td><%=feedbacks[i].subject%></td>
-                <td><%=feedbacks[i].content%></td>
-                <td><%=feedbacks[i].date%></td>
-            </tr>
-            <%}%>
-        </table>
-        <button name="add" id="add">Add</button>
-        <button name="delete" id="delete">Delete</button>
-        <button name="update" id="update">Update</button>
-        <%}%>
-    </div>
 
-    <div>
-        <% var rowPerPage = 5;
-        var indexLimit = 2;
-        if(data!=='' && data.count >rowPerPage){
-            var count = data.count;
-            var pages = Math.round(count/rowPerPage);
-                for(i=0; i<pages; i++){
-                    if(i >= indexLimit){%>
-                        ...
-                        <a href="?page=<%= pages-1 %>"><%=pages%></a>
-                    <% break;}else{%>
-                        <a href="?page=<%=i%>"><%=i+1%></a>
-                    <%}
+
+
+<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                <i class="fa fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="">
+                <img src="/images/logo.png">
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#intro">Home</a></li>
+                <li><a href="#services">Quản lý</a></li>
+                <li><a href="#gettingstart">Phản hồi</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"  data-toggle="modal" data-target="#signModal">Đăng Kí</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#loginModal">Đăng Nhập</a></li>
+                        <li><a href="#">Example menu</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+<!-- Section: intro -->
+<section id="intro" class="intro">
+
+
+
+</section>
+<!-- /Section: intro -->
+
+
+
+<!-- Section: services -->
+<section id="services" class="home-section text-center">
+
+    <div class="heading-about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="wow bounceInDown" data-wow-delay="0.4s">
+                        <div class="section-heading">
+                            <h2>Quản lý account</h2>
+                            <i class="fa fa-2x fa-angle-down"></i>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2 col-lg-offset-5">
+                <hr class="marginbot-50">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 col-md-3">
+                <div class="wow fadeInLeft" data-wow-delay="0.2s">
+                    <div class="service-box">
+                        <div class="service-icon">
+                            <button type="button" class="btn btn-default btn-lg">
+                                <i class="fa fa-plus"></i> Add Admin
+                            </button>
+                        </div>
+                        <div class="service-desc">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-3">
+                <div class="wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="service-box">
+                        <div class="service-icon">
+                            <button type="button" class="btn btn-default btn-lg">
+                                <i class="fa fa-edit"></i> Modifier
+                            </button>
+                        </div>
+                        <div class="service-desc">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-3">
+                <div class="wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="service-box">
+                        <div class="service-icon">
+                            <button type="button" class="btn btn-default btn-lg">
+                                <i class="fa fa-ban"></i> DELETE USER
+                            </button>
+                        </div>
+                        <div class="service-desc">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 col-md-3">
+                <div class="wow fadeInRight" data-wow-delay="0.2s">
+                    <div class="service-box">
+                        <div class="service-icon">
+                            <button type="button" class="btn btn-default btn-lg">
+                                <i class="fa fa-list"></i> LIST USER
+                            </button>
+                        </div>
+                        <div class="service-desc">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--table user-->
+        <div class="rơw">
+
+
+        </div>
+    </div>
+</section>
+<!-- /Section: servives -->
+
+
+<!-- Section: getting start -->
+<section id="gettingstart" class="home-section text-center">
+
+
+    <div class="heading-about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="wow bounceInDown" data-wow-delay="0.4s">
+                        <div class="section-heading">
+                            <h2>Phản Hồi</h2>
+                            <i class="fa fa-2x fa-angle-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2 col-lg-offset-5">
+                <hr class="marginbot-50">
+            </div>
+        </div>
+        <div class="rơw">
+
+            <div class="alert alert-success" id="events-result" data-es="Aquí se muestra el resultado del evento">
+                Here is the result of event.
+            </div>
+
+
+            <table id="fb">
+                <thead>
+                <tr>
+                    <th data-field="state" data-checkbox="true"></th>
+                    <th data-field="id" data-sortable="true">id</th>
+                    <th data-field="name" data-sortable="true">Name</th>
+                    <th data-field="email" data-sortable="true">Email</th>
+                    <th data-field="subject" data-sortable="true">Subject</th>
+                    <th data-field="content" data-sortable="true">content</th>
+                    <th data-field="date" data-sortable="true">Date</th>
+                    <th data-field="operate" data-formatter="operateFormatter" data-events="operateEvents">Item Operate</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <%for(i=0; i< feedbacks.length; i++){%>
+                <tr id="<%=feedbacks[i].id%>" >
+                    <td><input type="checkbox"  value="<%=feedbacks[i].id%>"/></td>
+                    <td><%=feedbacks[i].id%></td>
+                    <td><%=feedbacks[i].name%></td>
+                    <td><%=feedbacks[i].email%></td>
+                    <td><%=feedbacks[i].subject%></td>
+                    <td><%=feedbacks[i].content%></td>
+                    <td><%=feedbacks[i].date%></td>
+                </tr>
+                <%}%>
+
+
+                </tbody>
+
+            </table>
+
+            <div id="pagFeedbacks">
+                <% var rowPerPage = 5;
+                var indexLimit = 2;
+                        if(data!=='' && data.count >rowPerPage){
+                            var count = data.count;
+                            if(count%rowPerPage === 0){
+                                var pages = Math.round(count/rowPerPage);
+                                for(i=0; i<pages; i++){
+                                if(i >= indexLimit){%>
+                                ...
+                                <a href="?page=<%=pages-1%>"><%=pages%></a>
+                                <% break;}else{%>
+                                <a href="?page=<%=i%>"><%=i+1%></a>
+                                <%}
+                                }
+                            }else{
+                                var pages = Math.round(count/rowPerPage);
+                                for(i=0; i<=pages; i++){
+                                    if(i >= indexLimit){%>
+                                    ...
+                                    <a  href="?page=<%=pages%>"><%=pages+1%></a>
+                                    <% break;}else{%>
+                                    <a href="?page=<%=pages%>"><%=i+1%></a>
+                                    <%}
+                                    }
+                            }
+                        }
+                        else{
+
+                        }%>
+            </div>
+
+            <script>$(document).ready( function(){
+                    // snow fall
+                    var $result = $('#events-result');
+                    $('#fb').bootstrapTable(
+                            {
+                                method: 'get',
+                                cache: false,
+                                height: 400,
+                                pagination: true,
+                                pageSize: 50,
+                                pageList: [10, 25, 50, 100, 200],
+                                search: true,
+                                showColumns: true,
+                                showRefresh: true,
+                                minimumCountColumns: 2
+                            }).on('all.bs.table', function (e, name, args) {
+                                console.log('Event:', name, ', data:', args);
+                            }).on('click-row.bs.table', function (e, row, $element) {
+                                console.log('*** this: ', JSON.stringify(row.id));
+                                $result.text('Event: click-row.bs.table, data: ' + JSON.stringify(row.name));
+                                $('#exampleModal').modal('toggle');
+                                $('#id').val(JSON.stringify(row.id).substring(1,JSON.stringify(row.id).length-1));
+                                $('#email').val(JSON.stringify(row.email).substring(1,JSON.stringify(row.email).length-1));
+                                $('#date').text(JSON.stringify(row.date).substring(1,JSON.stringify(row.date).length-1));
+                                $('#content').text(JSON.stringify(row.content).substring(1,JSON.stringify(row.content).length-1));
+                                $('#name').text(JSON.stringify(row.name).substring(1,JSON.stringify(row.name).length-1));
+
+
+                            }).on('dbl-click-row.bs.table', function (e, row, $element) {
+                                $result.text('Event: dbl-click-row.bs.table, data: ' + JSON.stringify(row));
+                            }).on('sort.bs.table', function (e, name, order) {
+                                $result.text('Event: sort.bs.table, data: ' + name + ', ' + order);
+                            }).on('check.bs.table', function (e, row) {
+                                $result.text('Event: check.bs.table, data: ' + JSON.stringify(row));
+                            }).on('uncheck.bs.table', function (e, row) {
+                                $result.text('Event: uncheck.bs.table, data: ' + JSON.stringify(row));
+                            }).on('check-all.bs.table', function (e) {
+                                $result.text('Event: check-all.bs.table');
+                            }).on('uncheck-all.bs.table', function (e) {
+                                $result.text('Event: uncheck-all.bs.table');
+                            }).on('load-success.bs.table', function (e, data) {
+                                $result.text('Event: load-success.bs.table');
+                            }).on('load-error.bs.table', function (e, status) {
+                                $result.text('Event: load-error.bs.table, data: ' + status);
+                            }).on('column-switch.bs.table', function (e, field, checked) {
+                                $result.text('Event: column-switch.bs.table, data: ' +
+                                        field + ', ' + checked);
+                            }).on('page-change.bs.table', function (e, size, number) {
+                                $result.text('Event: page-change.bs.table, data: ' + number + ', ' + size);
+                            }).on('search.bs.table', function (e, text) {
+                                $result.text('Event: search.bs.table, data: ' + text);
+                            });
+                });
+
+
+                function operateFormatter(value, row, index) {
+                    return [
+                        '<a class="like" href="javascript:void(0)" title="Like">',
+                        '<i class="fa fa-heart"></i>',
+                        '</a>',
+                        /*'<a class="edit ml10" href="javascript:void(0)" title="Edit">',
+                         '<i class="fa fa-edit"></i>',
+                         '</a>',*/
+                        '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
+                        '<i class="fa fa-ban"></i>',
+                        '</a>'
+                    ].join('');
                 }
-        }
-        else{
 
-        }%>
+                window.operateEvents = {
+                    'click .like': function (e, value, row, index) {
+                        alert('You click like icon, row: ' + JSON.stringify(row));
+                        console.log(value, row, index);
+                    },
+                    /*'click .edit': function (e, value, row, index) {
+                     alert('You click edit icon, row: ' + JSON.stringify(row));
+                     console.log(value, row, index);
+                     },*/
+                    'click .remove': function (e, value, row, index) {
+                        alert('You click remove icon, row: ' + JSON.stringify(row));
+                        $('#fb').bootstrapTable('remove', {
+                            field: JSON.stringify(row.id),
+                            values: ids
+                        });
+
+                        console.log(value, row, index);
+                    }
+                };
+
+
+            </script>
+
+        </div>
+
     </div>
+</section>
+<!-- /Section: getting start -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="name"></h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">id:</label>
+                        <input type="text" class="form-control" id="id" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">email:</label>
+                        <input type="text" class="form-control" id="email" readonly>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">content</label>
+                        <textarea class="form-control" id="content" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">date</label>
+                        <label id="date"></label>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="delete">Delete</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="wow shake" data-wow-delay="0.4s">
+                    <div class="page-scroll marginbot-30">
+                        <a href="#intro" id="totop" class="btn btn-circle">
+                            <i class="fa fa-angle-double-up animated"></i>
+                        </a>
+                    </div>
+                </div>
+                <p>&copy;Copyright 2014 - VchatTeam. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Core JavaScript Files -->
+
+<script src="/js/jquery.easing.min.js"></script>
+<script src="/js/jquery.scrollTo.js"></script>
+<script src="/js/wow.min.js"></script>
+<!-- Custom Theme JavaScript -->
+<script src=" /js/custom.js"></script>
+<script src=" /js/jquery.snow.js"></script>
+
+<script>
+    $(document).ready( function(){
+        // snow fall
+        $.fn.snow();
+
+
+        //
+
+
+
+    });
+</script>
+
 
 </body>
 </html>

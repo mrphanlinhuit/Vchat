@@ -23,6 +23,7 @@
     <!--javascrip create room-->
     <script type="text/javascript" src='/js/jquery-2.1.3.min.js'></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/js/md5.js"></script>
     <script type="text/javascript" src="/js/functions.js"></script>
 
     <script>
@@ -108,6 +109,14 @@
                     return false;
                 }
 
+                if($('[name="idQuestion"]').val() !== ''){
+                    var idQuestion = $('[name="idQuestion"]').val();
+                }else alert('idQuestion is empty');
+
+                if($('[name="answer"]').val() !== ''){
+                    var answer = $('[name="answer"]').val();
+                }else alert('you have to answer the random question');
+
                 var honeyPot = $('#honeyPot').val();
 
                 $.post('/feedback',{
@@ -115,11 +124,15 @@
                     email: email,
                     subject: subject,
                     content: content,
-                    honeyPot: honeyPot
+                    honeyPot: honeyPot,
+                    idQuestion: idQuestion,
+                    answer: answer
                 }, function(data, status){
                     switch (status){
                         case 'success':
-                            alert('jquery ajax: status '+ status);
+                                if(data === 'ok')
+                                    alert('jquery ajax: status '+ status);
+                                else console.log('**** data: ', data);
                             break;
                         case 'notmodified':
                             alert('notmodified');
@@ -625,6 +638,11 @@
                                 <option value="product">Product Support</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <p>câu hỏi ngẫu nhiên: <%=data.randQuestion.question%></p>
+                            <input type="hidden" name="idQuestion" value="<%=data.randQuestion.id%>"/><br/>
+                            <input type="text" name="answer" class="form-control" required="required"/><br/>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -632,7 +650,7 @@
                                 Message</label>
                             <textarea name="message" id="message" class="form-control" rows="9" cols="25" required="required"
                                 placeholder="Message"></textarea>
-                            <input type="text" type="hidden" id="honeyPot" name="honeyPot"/>
+                            <input type="hidden" id="honeyPot" name="honeyPot"/>
                         </div>
                     </div>
                     <div class="col-md-12">

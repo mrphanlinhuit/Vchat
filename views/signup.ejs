@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="<%=data.host%>/js/jquery-2.1.3.min.js"></script>
+    <script src="<%=data.host%>/js/validateUserInput.js"></script>
+
+</head>
+<body>
+<div><%if(!data){%>
+      <div><%=data.message%></div>
+    <%}%></div>
+<form action="http://localhost:8080/admin/signup" method="post">
+    email: <input type="text" name="email"/><br/>
+    password: <input type="text" name="password"/><br/>
+    name: <input type="text" name="name"/><br/>
+    birth day: <input type="date" name="birthday"/><br/>
+    place of birth: <input type="text" name="birthplace"/><br/>
+
+    <input type="submit" value="submit"/>
+
+    <script>
+
+        $(document).ready(function(){
+            $('[type="submit"]').click(function(e){
+                var email = $('[name="email"]').val();
+                if(email !== '' && validateEmail(email));
+                else{
+                    alert(email + ' is invalid');
+                    $('[name="email"]').focus();
+                    e.preventDefault();
+                    return false;
+                }
+
+                var password = $('[name="password"]').val();
+                if(password !== '' && validatePassword(password));
+                else{
+                    alert(password + ' is invalid');
+                    $('[name="password"]').focus();
+                    e.preventDefault();
+                    return false;
+                }
+
+                var name = $('[name="name"]').val();
+                if(name === ''){
+                    alert('name is empty');
+                    $('[name="name"]').focus();
+                    e.preventDefault();
+                    return false;
+                }
+
+                var birthday = $('[name="birthday"]').val();
+                if(birthday === ''){
+                    alert('birthday is empty');
+                    $('[name="birthday"]').focus();
+                    e.preventDefault();
+                    return false;
+                }
+
+                var birthplace = $('[name="birthplace"]').val();
+                if(birthplace === ''){
+                    alert('birthplace is empty');
+                    $('[name="birthplace"]').focus();
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+</form>
+</body>
+</html>
