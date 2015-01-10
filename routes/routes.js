@@ -89,10 +89,15 @@ module.exports = function(app, passport){
             res.render('login', {data: data});
         })
         .post(passport.authenticate('local-login',{
-            successRedirect: '/admin/feedbacks',
+            successRedirect: '/admin',
             failureRedirect: '/admin/login',
             failureFlash: true // allow flash message
         }));
+
+    app.route('/admin')
+        .get( isLoggedIn, function(req, res, next){
+            res.render('admin');
+        });
 
     app.route('/admin/logout')
         .get(function(req, res, next){
@@ -130,27 +135,25 @@ module.exports = function(app, passport){
 
     app.route('/admin/feedbacks')
         .get(isLoggedIn, function(req, res, next){
-            var limit = 5;
+            var limit = 50;
             var page = req.param('page', 0);
             var start = limit*page;
             feedbackModel
                 .find({})
-                .skip(start)
-                .limit(limit)
+                .skip(0)
+                .limit()
                 .exec(function(err, feedbacks){
                     var count;
                     if(err) next(err);
-                    feedbackModel.count({},function(err, count){
-                        if(err) next(err)
-                        var data = {feedbacks: feedbacks, count: count};
-                        res.render('feedbacks', {'data': data});
-                    });
+
+                    res.send(feedbacks);
                 });
         })
         .post(isLoggedIn, function(req, res, next){
             var limit = 5;
             var page = req.body.page;
             console.log('**** page: ', page);
+            console.log('**** req: ', req.body);
             var start = limit*page;
             feedbackModel
                 .find({})
