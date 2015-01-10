@@ -57,7 +57,7 @@ module.exports = function(app, passport){
                 var answer = req.body.answer;
                 randQuestionModel.validateAnswer(randQuestion, function(err, q){
                     if(err) next(err);
-                    console.log('*** q: ', q)
+
                     if(q.answer === answer){
                         var newFeedback = new feedbackModel();
                         newFeedback.name = req.body.name;

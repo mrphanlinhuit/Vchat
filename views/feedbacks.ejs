@@ -48,40 +48,32 @@
             });
 
             $('#delete').click(function(e){
-                var id = radio.val();
-                radio.attr('checked', false);
-                radio.val('');
-                if(id !== ''){
-                    $.post('/admin/feedback/delete',{
-                                id: id
-                            }, function(data, status){
-                                switch (status){
-                                    case 'success':
-                                        alert('jquery ajax: status '+ status + ' **** data: '+ data);
-                                        $('#'+id).slideUp;
-                                        $('#'+id).remove();
-                                        break;
-                                    case 'notmodified':
-                                        alert('notmodified');
-                                        break;
-                                    case 'error':
-                                        alert('some error happended');
-                                        break;
-                                    case 'timeout':
-                                        alert('request was timeout');
-                                        break;
-                                    case 'parsererror':
-                                        alert('parsererror');
-                                        break;
-                                    default :
-                                        alert('unkown status');
-                                }
-                            }
-                    );
-                }else{
-                    alert('you didn\'t select any row');
-                    return false;
-                }
+                alert('delete');
+                var id = $('#id').val();
+                $.post('/admin/feedback/delete',{
+                        id: id
+                    }, function(data, status){
+                        switch (status){
+                            case 'success':
+                                alert('jquery ajax: status '+ status + ' **** data: '+ data);
+                                break;
+                            case 'notmodified':
+                                alert('notmodified');
+                                break;
+                            case 'error':
+                                alert('some error happended');
+                                break;
+                            case 'timeout':
+                                alert('request was timeout');
+                                break;
+                            case 'parsererror':
+                                alert('parsererror');
+                                break;
+                            default :
+                                alert('unkown status');
+                        }
+                    }
+                );
             });
 
             $('#update').click(function(e){
@@ -95,9 +87,8 @@
             });
 
             $('#pagFeedbacks a').click(function(e){
-                alert('click ');
+
                 var page = $(this).text() - 1;
-                console.log($(this).text());
                 $('#fb tbody ').slideUp(300);
                 $('#fb tbody tr').remove();
                 $.post('/admin/feedbacks',{
@@ -122,7 +113,7 @@
                                         '</tr>';
                                 }
                                 $('#fb tbody').append($(str));
-                                $('#fb tbody').slideDown(3000);
+                                $('#fb tbody').slideDown('slow');
                             }
                             break;
                         case 'notmodified':
@@ -384,59 +375,59 @@
                         }%>
             </div>
 
-            <script>$(document).ready( function(){
-                    // snow fall
-                    var $result = $('#events-result');
-                    $('#fb').bootstrapTable(
-                            {
-                                method: 'get',
-                                cache: false,
-                                height: 400,
-                                pagination: true,
-                                pageSize: 50,
-                                pageList: [10, 25, 50, 100, 200],
-                                search: true,
-                                showColumns: true,
-                                showRefresh: true,
-                                minimumCountColumns: 2
-                            }).on('all.bs.table', function (e, name, args) {
-                                console.log('Event:', name, ', data:', args);
-                            }).on('click-row.bs.table', function (e, row, $element) {
-                                console.log('*** this: ', JSON.stringify(row.id));
-                                $result.text('Event: click-row.bs.table, data: ' + JSON.stringify(row.name));
-                                $('#exampleModal').modal('toggle');
-                                $('#id').val(JSON.stringify(row.id).substring(1,JSON.stringify(row.id).length-1));
-                                $('#email').val(JSON.stringify(row.email).substring(1,JSON.stringify(row.email).length-1));
-                                $('#date').text(JSON.stringify(row.date).substring(1,JSON.stringify(row.date).length-1));
-                                $('#content').text(JSON.stringify(row.content).substring(1,JSON.stringify(row.content).length-1));
-                                $('#name').text(JSON.stringify(row.name).substring(1,JSON.stringify(row.name).length-1));
+            <script>$(document).ready(function(){
+                // snow fall
+                var $result = $('#events-result');
+                $('#fb').bootstrapTable({
+                        method: 'get',
+                        cache: false,
+                        height: 400,
+                        pagination: true,
+                        pageSize: 50,
+                        pageList: [10, 25, 50, 100, 200],
+                        search: true,
+                        showColumns: true,
+                        showRefresh: true,
+                        minimumCountColumns: 2
+                    }).on('all.bs.table', function (e, name, args) {
+                        console.log('Event:', name, ', data:', args);
+                    }).on('click-row.bs.table', function (e, row, $element) {
 
+                        $result.text('Event: click-row.bs.table, data: ' + JSON.stringify(row.name));
+                        $('#exampleModal').modal('toggle');
+                        $('#id').val(JSON.stringify(row.id).substring(1,JSON.stringify(row.id).length-1));
+                        $('#email').val(JSON.stringify(row.email).substring(1,JSON.stringify(row.email).length-1));
+                        $('#date').text(JSON.stringify(row.date).substring(1,JSON.stringify(row.date).length-1));
+                        $('#content').text(JSON.stringify(row.content).substring(1,JSON.stringify(row.content).length-1));
+                        $('#name').text(JSON.stringify(row.name).substring(1,JSON.stringify(row.name).length-1));
 
-                            }).on('dbl-click-row.bs.table', function (e, row, $element) {
-                                $result.text('Event: dbl-click-row.bs.table, data: ' + JSON.stringify(row));
-                            }).on('sort.bs.table', function (e, name, order) {
-                                $result.text('Event: sort.bs.table, data: ' + name + ', ' + order);
-                            }).on('check.bs.table', function (e, row) {
-                                $result.text('Event: check.bs.table, data: ' + JSON.stringify(row));
-                            }).on('uncheck.bs.table', function (e, row) {
-                                $result.text('Event: uncheck.bs.table, data: ' + JSON.stringify(row));
-                            }).on('check-all.bs.table', function (e) {
-                                $result.text('Event: check-all.bs.table');
-                            }).on('uncheck-all.bs.table', function (e) {
-                                $result.text('Event: uncheck-all.bs.table');
-                            }).on('load-success.bs.table', function (e, data) {
-                                $result.text('Event: load-success.bs.table');
-                            }).on('load-error.bs.table', function (e, status) {
-                                $result.text('Event: load-error.bs.table, data: ' + status);
-                            }).on('column-switch.bs.table', function (e, field, checked) {
-                                $result.text('Event: column-switch.bs.table, data: ' +
-                                        field + ', ' + checked);
-                            }).on('page-change.bs.table', function (e, size, number) {
-                                $result.text('Event: page-change.bs.table, data: ' + number + ', ' + size);
-                            }).on('search.bs.table', function (e, text) {
-                                $result.text('Event: search.bs.table, data: ' + text);
-                            });
+                    }).on('dbl-click-row.bs.table', function (e, row, $element) {
+                            $result.text('Event: dbl-click-row.bs.table, data: ' + JSON.stringify(row));
+                        }).on('sort.bs.table', function (e, name, order) {
+                            $result.text('Event: sort.bs.table, data: ' + name + ', ' + order);
+                        }).on('check.bs.table', function (e, row) {
+                            $result.text('Event: check.bs.table, data: ' + JSON.stringify(row));
+                        }).on('uncheck.bs.table', function (e, row) {
+                            $result.text('Event: uncheck.bs.table, data: ' + JSON.stringify(row));
+                        }).on('check-all.bs.table', function (e) {
+                            $result.text('Event: check-all.bs.table');
+                        }).on('uncheck-all.bs.table', function (e) {
+                            $result.text('Event: uncheck-all.bs.table');
+                        }).on('load-success.bs.table', function (e, data) {
+                            $result.text('Event: load-success.bs.table');
+                        }).on('load-error.bs.table', function (e, status) {
+                            $result.text('Event: load-error.bs.table, data: ' + status);
+                        }).on('column-switch.bs.table', function (e, field, checked) {
+                            $result.text('Event: column-switch.bs.table, data: ' +
+                                    field + ', ' + checked);
+                        }).on('page-change.bs.table', function (e, size, number) {
+                            $result.text('Event: page-change.bs.table, data: ' + number + ', ' + size);
+                        }).on('search.bs.table', function (e, text) {
+                            $result.text('Event: search.bs.table, data: ' + text);
+                        });
                 });
+
+
 
 
                 function operateFormatter(value, row, index) {
@@ -552,7 +543,7 @@
 <script>
     $(document).ready( function(){
         // snow fall
-        $.fn.snow();
+//        $.fn.snow();
 
 
         //
