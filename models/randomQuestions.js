@@ -13,7 +13,7 @@ var randQuestion = mongoose.Schema({
 
 randQuestion.statics.getRandom = function(cb){
     this.count(function(err, count){
-        if(err) return cb(err);
+        if(err) return cb(err, null);
         var rand = Math.floor(count * Math.random());
         if(rand === count) rand -= 1;
         this.find({}).skip(rand).limit(1).exec(cb);

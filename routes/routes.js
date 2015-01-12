@@ -1,5 +1,6 @@
 var feedbackModel = require('../models/feedbacks');
 var randQuestionModel = require('../models/randomQuestions');
+var userModel = require('../models/users');
 
 module.exports = function(app, passport){
     // =====================================
@@ -83,6 +84,11 @@ module.exports = function(app, passport){
 
 
     //====== Admin
+    app.route('/admin')
+        .get( isLoggedIn, function(req, res, next){
+            res.render('admin');
+        });
+
     app.route('/admin/login')
         .get(function(req, res, next){
             var data = {host: 'http://'+req.headers.host, message: req.flash('loginMessage')};
@@ -93,11 +99,6 @@ module.exports = function(app, passport){
             failureRedirect: '/admin/login',
             failureFlash: true // allow flash message
         }));
-
-    app.route('/admin')
-        .get( isLoggedIn, function(req, res, next){
-            res.render('admin');
-        });
 
     app.route('/admin/logout')
         .get(function(req, res, next){
@@ -117,22 +118,59 @@ module.exports = function(app, passport){
             failureFlash: true //allow flash message
         }));
 
+    //random questions
+    app.route('/admin/getListQuestion')
+        .get(isLoggedIn, function(req, res, next){
+            randQuestionModel
+                .find({})
+                .skip(0)
+                .limit()
+                .exec(function(err, questions){
+                    res.send(questions);
+                });
+        })
+        .post();
 
     app.route('/admin/addRandomQuestion')
-        .get(function(req, res, next){
-            var data = {host: 'http://'+req.headers.host};
-            res.render('randomQuestions', {data: data});
+        .get(isLoggedIn, function(req, res, next){
+            res.redirect('/admin');
         })
-        .post(function(req, res, next){
+        .post(isLoggedIn, function(req, res, next){
+            console.log('**** req.body', req.body);
             var newQuestion = new randQuestionModel();
             newQuestion.question = req.body.question;
             newQuestion.answer = req.body.answer;
             newQuestion.save(function(err){
                 if(err) next(err);
                 res.redirect('/admin/addRandomQuestion');
-            })
+            });
         });
 
+    app.route('/admin/removeRandomQuestion')
+        .get()
+        .post(isLoggedIn, function(req, res, next){
+            var id = req.body.id;
+            if(id !== ''){
+                randQuestionModel.findByIdAndRemove(id, function(err, q){
+                    if(err) next(err);
+                    res.send('ok');
+                });
+            }else res.send('id is empty');
+        });
+
+    app.route('/admin/updateRandomQuestion')
+        .get()
+        .post(isLoggedIn, function(req, res, next){
+            var id = req.body.id;
+            var question = req.body.question;
+            var answer = req.body.answer;
+            randQuestionModel.findByIdAndUpdate(id, {$set:{question: question, answer: answer}}, function(err, q){
+                if(err) next(err);
+                res.send('ok');
+            });
+        });
+
+    //feedbacks
     app.route('/admin/feedbacks')
         .get(isLoggedIn, function(req, res, next){
             var limit = 50;
@@ -150,18 +188,17 @@ module.exports = function(app, passport){
                 });
         })
         .post(isLoggedIn, function(req, res, next){
-            var limit = 5;
+            var limit = 50;
             var page = req.body.page;
             console.log('**** page: ', page);
             console.log('**** req: ', req.body);
             var start = limit*page;
             feedbackModel
                 .find({})
-                .skip(start)
-                .limit(limit)
+                .skip(0)
+                .limit()
                 .exec(function(err, feedbacks){
                     if(err) next(err);
-                        console.log('****** feedbacks: ', feedbacks);
                         res.send(feedbacks);
                 });
         });
@@ -173,12 +210,67 @@ module.exports = function(app, passport){
                 var id = req.body.id;
                 feedbackModel.findByIdAndRemove(id, function(err, feedback){
                     if(err) next(err);
-                    console.log('remove feedback: ', feedback);
                     res.send('ok');
                 });
             }else{
                 res.send('id was empty');
             }
+        });
+
+    app.route('/admin/users')
+        .get(isLoggedIn, function(req, res, next){
+            userModel
+                .find({})
+                .skip(0)
+                .limit()
+                .exec(function(err, users){
+                    if(err) next(err);
+                    res.send(users);
+                });
+        })
+        .post();
+
+    app.route('/admin/addUser')
+        .get()
+        .post(isLoggedIn, function(req, res, next){
+            var newUser = new userModel();
+            newUser.email = req.body.email;
+            newUser.password = req.body.password;
+            newUser.name = req.body.name;
+            newUser.birthday = req.body.birthday;
+            newUser.birthplace = req.body.birthplace;
+            newUser.dateOfRegistration = Date();
+            newUser.save(function(err){
+                if(err) next(err);
+                res.send('ok');
+            });
+
+        });
+
+    app.route('/admin/updateUser')
+        .get()
+        .post(isLoggedIn, function (req, res, next) {
+            var id = req.body.id;
+            var email = req.body.email;
+            var password = req.body.password;
+            var name = req.body.name;
+            var birthday = req.body.birthday;
+            var birthplace = req.body.birthplace;
+            userModel.findByIdAndUpdate(id, {$set:{email: email,
+                password: password, name: name, birthday: birthday, birthplace: birthplace}}, function(err, q){
+                if(err) next(err);
+                res.send('ok');
+            });
+        });
+
+    app.route('/admin/deleteUser')
+        .get()
+        .post(isLoggedIn, function(req, res, next){
+            var id = req.body.id;
+            userModel.findByIdAndRemove(id, function(err, user){
+                if(err) next(err);
+                res.send('ok');
+            })
         });
 };
 
@@ -186,9 +278,9 @@ module.exports = function(app, passport){
 function isLoggedIn(req, res, next){
     //if user is authenticated in the session, carry on
     if(req.isAuthenticated()){
-        console.log('user logged in');
         return next();
     }
     //if they aren't, redirect them to home page.
+    console.log('user didnt logg in');
     res.redirect('/');
 }

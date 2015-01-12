@@ -26,6 +26,8 @@
 
     <script src=" /js/bootstrap-table.min.js"></script>
     <script src="/js/bootstrap-table-flatJSON.min.js"></script>
+    <script src="/js/bootstrap-dialog.js"></script>
+
 </head>
 <body>
 
@@ -46,14 +48,15 @@
         <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#intro">Home</a></li>
-                <li><a href="#services">Quản lý</a></li>
-                <li><a href="#gettingstart">Phản hồi</a></li>
+                <li><a href="#user">User</a></li>
+                <li><a href="#gettingstart">Feedback</a></li>
+                <li><a href="#question">Question</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="#"  data-toggle="modal" data-target="#signModal">Đăng Kí</a></li>
                         <li><a href="#" data-toggle="modal" data-target="#loginModal">Đăng Nhập</a></li>
-                        <li><a href="#">Example menu</a></li>
+                        <li><a href="/admin/logout">logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -74,8 +77,8 @@
 
 
 
-<!-- Section: services -->
-<section id="services" class="home-section text-center">
+<!-- Section:"user" -->
+<section id="user" class="home-section text-center">
 
     <div class="heading-about">
         <div class="container">
@@ -93,75 +96,96 @@
         </div>
     </div>
     <div class="container">
-        <div class="row">
-            <div class="col-lg-2 col-lg-offset-5">
-                <hr class="marginbot-50">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-3 col-md-3">
-                <div class="wow fadeInLeft" data-wow-delay="0.2s">
-                    <div class="service-box">
-                        <div class="service-icon">
-                            <button type="button" class="btn btn-default btn-lg">
-                                <i class="fa fa-plus"></i> Add Admin
-                            </button>
-                        </div>
-                        <div class="service-desc">
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3 col-md-3">
-                <div class="wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="service-box">
-                        <div class="service-icon">
-                            <button type="button" class="btn btn-default btn-lg">
-                                <i class="fa fa-edit"></i> Modifier
-                            </button>
-                        </div>
-                        <div class="service-desc">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3 col-md-3">
-                <div class="wow fadeInUp" data-wow-delay="0.2s">
-                    <div class="service-box">
-                        <div class="service-icon">
-                            <button type="button" class="btn btn-default btn-lg">
-                                <i class="fa fa-ban"></i> DELETE USER
-                            </button>
-                        </div>
-                        <div class="service-desc">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-3 col-md-3">
-                <div class="wow fadeInRight" data-wow-delay="0.2s">
-                    <div class="service-box">
-                        <div class="service-icon">
-                            <button type="button" class="btn btn-default btn-lg">
-                                <i class="fa fa-list"></i> LIST USER
-                            </button>
-                        </div>
-                        <div class="service-desc">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!--table user-->
         <div class="rơw">
-
-
+            <table id="tbUser"></table>
+            <script>
+                $(document).ready(function(){
+                    //load users aynchonously
+                    $('[href="#user"]').click(function(){
+                        $('#tbUser').bootstrapTable({
+                            method: 'get',
+                            url: '/admin/users',
+                            cache: false,
+                            height: 450,
+                            striped: true,
+                            pagination: true,
+//                            sidePagination: 'client',
+                            pageSize: 5,
+                            pageList: [10, 25, 50, 100, 200],
+                            search: true,
+                            showColumns: true,
+                            showRefresh: true,
+                            minimumCountColumns: 2,
+                            clickToSelect: true,
+                            columns: [{
+                                field: 'state',
+                                checkbox: true
+                            }, {
+                                field: '_id',
+                                title: 'Item ID',
+                                halign: 'center',
+                                align: 'left',
+                                valign: 'top',
+                                sortable: true
+                            }, {
+                                field: 'name',
+                                title: 'Item Name',
+                                halign: 'center',
+                                align: 'left',
+                                valign: 'top',
+                                sortable: true
+                            }, {
+                                field: 'email',
+                                title: 'Email',
+                                halign: 'center',
+                                align: 'left',
+                                valign: 'top',
+                                sortable: true
+                            },{
+                                field: 'password',
+                                title: 'Password',
+                                width: 250,
+                                halign: 'center',
+                                align: 'left',
+                                valign: 'top',
+                                sortable: true
+                            }, {
+                                field: 'birthday',
+                                title: 'Birthday',
+                                halign: 'center',
+                                align: 'left',
+                                valign: 'top',
+                                sortable: true
+                            },{
+                                field: 'birthplace',
+                                title: 'Birthplace',
+                                halign: 'center',
+                                align: 'left',
+                                valign: 'top',
+                                sortable: true
+                            },{
+                                field: 'operate',
+                                title: 'Item Operate',
+                                halign: 'center',
+                                align: 'center',
+                                valign: 'middle',
+                                clickToSelect: false,
+                                events: operateEvents,
+                                formatter: operateUserFormatter
+                            }]
+                        });
+                    });
+                    function operateUserFormatter(value, row, index) {
+                        return [
+                            '<a class="user-actions ml10" href="javascript:void(0)" title="User Actions">',
+                            '<i class="fa fa-ban"></i>',
+                            '</a>'
+                        ].join('');
+                    }
+                });
+            </script>
         </div>
     </div>
 </section>
@@ -178,7 +202,7 @@
                 <div class="col-lg-8 col-lg-offset-2">
                     <div class="wow bounceInDown" data-wow-delay="0.4s">
                         <div class="section-heading">
-                            <h2>Phản Hồi</h2>
+                            <h2>Client's feedbacks</h2>
                             <i class="fa fa-2x fa-angle-down"></i>
                         </div>
                     </div>
@@ -194,17 +218,18 @@
         <!--</div>-->
         <div class="rơw">
             <!--feedbacks table-->
-            <table id="fb"></table>
+            <table id="tbfback"></table>
             <script>$(document).ready(function(){
                     //load feedbacks aynchonously
                     $('[href="#gettingstart"]').click(function(e){
-                        $('#fb').bootstrapTable({
+                        $('#tbfback').bootstrapTable({
                             method: 'get',
                             url: '/admin/feedbacks',
                             cache: false,
                             height: 600,
                             striped: true,
                             pagination: true,
+//                            sidePagination: 'client',
                             pageSize: 5,
                             pageList: [10, 25, 50, 100, 200],
                             search: true,
@@ -218,39 +243,44 @@
                             }, {
                                 field: '_id',
                                 title: 'Item ID',
-                                align: 'right',
-                                valign: 'bottom',
+                                halign: 'center',
+                                align: 'left',
+                                valign: 'top',
                                 sortable: true
                             }, {
                                 field: 'name',
                                 title: 'Item Name',
-                                align: 'center',
-                                valign: 'middle',
+                                halign: 'center',
+                                align: 'left',
+                                valign: 'top',
                                 sortable: true
                             }, {
                                 field: 'email',
                                 title: 'Email',
+                                halign: 'center',
                                 align: 'left',
                                 valign: 'top',
                                 sortable: true
                             },{
                                 field: 'content',
                                 title: 'Content',
+                                halign: 'center',
                                 align: 'left',
                                 valign: 'top',
                                 sortable: true
                             }, {
                                 field: 'operate',
                                 title: 'Item Operate',
+                                halign: 'center',
                                 align: 'center',
                                 valign: 'middle',
                                 clickToSelect: false,
                                 events: operateEvents,
-                                formatter: operateFormatter
+                                formatter: operateFbFormatter
                             }]
 
                         }).on('all.bs.table', function (e, name, args) {
-                            console.log('Event:', name, ', data:', args);
+
                         }).on('click-row.bs.table', function (e, row, $element) {
 
 
@@ -266,59 +296,13 @@
 
                 });
 
-
-
-
-                function operateFormatter(value, row, index) {
+                function operateFbFormatter(value, row, index) {
                     return [
-                        '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
+                        '<a class="fb-actions ml10" href="javascript:void(0)" title="Feedback Actions">',
                         '<i class="fa fa-ban"></i>',
                         '</a>'
                     ].join('');
                 }
-
-                window.operateEvents = {
-                    'click .remove': function (e, value, row, index) {
-
-                        //Return all selected rows, when no record selected, am empty array will return.
-    //                        var selects = $('#fb').bootstrapTable('getSelections');
-    //                        ids = $.map(selects, function (row) {
-    //                            return row._id;
-    //                        });
-
-                        $.post('/admin/feedback/delete',{
-                                id: row._id
-                            }, function(data, status){
-                                switch (status){
-                                    case 'success':
-                                        alert('jquery ajax: status '+ status + ' **** data: '+ data);
-                                        //remove the row which was selected
-                                        $('#fb').bootstrapTable('remove', {
-                                            field: '_id',
-                                            values: [row._id]
-                                        });
-                                        break;
-                                    case 'notmodified':
-                                        alert('notmodified');
-                                        break;
-                                    case 'error':
-                                        alert('some error happended');
-                                        break;
-                                    case 'timeout':
-                                        alert('request was timeout');
-                                        break;
-                                    case 'parsererror':
-                                        alert('parsererror');
-                                        break;
-                                    default :
-                                        alert('unkown status');
-                                }
-                            }
-                        );
-                    }
-                };
-
-
             </script>
 
         </div>
@@ -326,47 +310,474 @@
     </div>
 </section>
 <!-- /Section: getting start -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="name"></h4>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="recipient-name" class="control-label">id:</label>
-                        <input type="text" class="form-control" id="id" readonly>
+
+<!--Section: random question-->
+<section id="question" class="home-section text-center">
+    <div class="heading-about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="wow bounceInDown" data-wow-delay="0.4s">
+                        <div class="section-heading">
+                            <h2>Random Questions</h2>
+                            <i class="fa fa-2x fa-angle-down"></i>
+                        </div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="recipient-name" class="control-label">email:</label>
-                        <input type="text" class="form-control" id="email" readonly>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="recipient-name" class="control-label">content</label>
-                        <textarea class="form-control" id="content" readonly></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="recipient-name" class="control-label">date</label>
-                        <label id="date"></label>
-                    </div>
-
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="delete">Delete</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="container">
+        <!--<div class="row">-->
+        <!--<div class="col-lg-2 col-lg-offset-5">-->
+        <!--<hr class="marginbot-50">-->
+        <!--</div>-->
+        <!--</div>-->
+        <div class="rơw">
+            <!--feedbacks table-->
+            <table id="tbfQuestion"></table>
+            <script>$(document).ready(function(){
+                    //load feedbacks aynchonously
+                    $('[href="#question"]').click(function(e){
+                        $('#tbfQuestion').bootstrapTable({
+                            method: 'get',
+                            url: '/admin/getListQuestion',
+                            cache: false,
+                            height: 470,
+                            striped: true,
+                            pagination: true,
+//                            sidePagination: 'client',
+                            pageSize: 10,
+                            pageList: [10, 25, 50, 100, 200],
+                            search: true,
+                            showColumns: true,
+                            showRefresh: true,
+                            minimumCountColumns: 2,
+                            clickToSelect: true,
+                            columns: [{
+                                field: 'state',
+                                checkbox: true
+                            }, {
+                                field: '_id',
+                                title: 'Item ID',
+                                halign: 'center',
+                                align: 'right',
+                                valign: 'bottom',
+                                sortable: true
+                            }, {
+                                field: 'question',
+                                title: 'Question',
+                                halign: 'center',
+                                align: 'center',
+                                valign: 'middle',
+                                sortable: true
+                            }, {
+                                field: 'answer',
+                                title: 'Answer',
+                                halign: 'center',
+                                align: 'left',
+                                valign: 'top',
+                                sortable: true
+                            }, {
+                                field: 'operate',
+                                title: 'Item Operate',
+                                halign: 'center',
+                                align: 'center',
+                                valign: 'middle',
+                                clickToSelect: false,
+                                events: operateEvents,
+                                formatter: operateQuestionFormatter
+                            }]
 
+                        }).on('all.bs.table', function (e, name, args) {
+
+                        }).on('click-row.bs.table', function (e, row, $element) {
+//                            $('#feedbackModal').modal('toggle');
+//                            $('#id').val(JSON.stringify(row.id).substring(1,JSON.stringify(row.id).length-1));
+//                            $('#email').val(JSON.stringify(row.email).substring(1,JSON.stringify(row.email).length-1));
+//                            $('#date').text(JSON.stringify(row.date).substring(1,JSON.stringify(row.date).length-1));
+//                            $('#content').text(JSON.stringify(row.content).substring(1,JSON.stringify(row.content).length-1));
+//                            $('#name').text(JSON.stringify(row.name).substring(1,JSON.stringify(row.name).length-1));
+
+                        })
+                    });
+
+                });
+
+                function operateQuestionFormatter(value, row, index) {
+                    return [
+                        '<a class="question-actions ml10" href="javascript:void(0)" title="Random Question Actions">',
+                        '<i class="fa fa-ban"></i>',
+                        '</a>'
+                    ].join('');
+                }
+
+                window.operateEvents = {
+                    //==== Feedback
+                    'click .fb-actions': function (e, value, row, index) {
+                        overrideBootstrapConfirm(2);
+                        var modal =
+                            '<form>'+
+                                '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">id:</label>'+
+                                    '<input type="text" class="form-control" id="id" readonly value='+row._id+'>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">email:</label>'+
+                                    '<input type="text" class="form-control" id="email" readonly value='+row.email+'>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">content</label>'+
+                                    '<textarea class="form-control" id="content" readonly rows="10" cols="50">'+row.content+'</textarea>'+
+                                '</div>'+
+                                '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">date</label>'+
+                                    '<label id="date">'+row.date+'</label>'+
+                                '</div>'+
+                            '</form>';
+
+                        BootstrapDialog.confirm($(modal), function(result){
+                            if(result) {
+                                //Return all selected rows, when no record selected, am empty array will return.
+                                //                        var selects = $('#tbfback').bootstrapTable('getSelections');
+                                //                        ids = $.map(selects, function (row) {
+                                //                            return row._id;
+                                //                        });
+                                $.post('/admin/feedback/delete',{
+                                            id: row._id
+                                        }, function(data, status){
+                                            switch (status){
+                                                case 'success':
+                                                    alert('jquery ajax: status '+ status + ' **** data: '+ data);
+                                                    //remove the row which was selected
+                                                    $('#tbfback').bootstrapTable('remove', {
+                                                        field: '_id',
+                                                        values: [row._id]
+                                                    });
+                                                    break;
+                                                case 'notmodified':
+                                                    alert('notmodified');
+                                                    break;
+                                                case 'error':
+                                                    alert('some error happended');
+                                                    break;
+                                                case 'timeout':
+                                                    alert('request was timeout');
+                                                    break;
+                                                case 'parsererror':
+                                                    alert('parsererror');
+                                                    break;
+                                                default :
+                                                    alert('unkown status');
+                                            }
+                                        }
+                                );
+                            }else {
+                            }
+                        });
+                    },
+
+                    //==== Question
+                    'click .question-actions': function(e, value, row, index){
+                        overrideBootstrapConfirm(4);
+                        var modal =
+                            '<form method="post">'+
+                                '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">ID</label>'+
+                                    '<input name="id" type="text" class="form-control" readonly id="id" value='+row._id+'>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Question</label>'+
+                                    '<textarea class="form-control" name="question" id="question" rows="10" cols="50">'+row.question+'</textarea>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Answer</label>'+
+                                    '<input type="text" name="answer" class="form-control" id="answer" value='+row.answer+'>'+
+                                '</div>'+
+                            '</form>';
+
+                        BootstrapDialog.confirm($(modal), function(result){
+                            if(result==='add') {
+                                var form = $('.modal form');
+                                var question = form.find('textarea[name="question"]').val();
+                                var answer = form.find('input[name="answer"]').val();
+                                $.post('/admin/addRandomQuestion',{
+                                            question: question,
+                                            answer: answer
+                                        }, function(data, status){
+                                            switch (status){
+                                                case 'success':
+                                                    alert('status '+ status);
+                                                    break;
+                                                default :
+                                                    alert('unkown status');
+                                                    break;
+                                            }
+                                        }
+                                );
+                            }else if(result === 'update'){
+                                var form = $('.modal form');
+                                var id = form.find('input[name="id"]').val();
+                                var question = form.find('textarea[name="question"]').val();
+                                var answer = form.find('input[name="answer"]').val();
+                                $.post('/admin/updateRandomQuestion',{
+                                            id: id,
+                                            question: question,
+                                            answer: answer
+                                        }, function(data, status){
+                                            switch (status){
+                                                case 'success':
+                                                    alert('status '+ status);
+                                                    $('#tbfQuestion').bootstrapTable('updateRow', {
+                                                        index: index,
+                                                        row: {
+                                                            question: question,
+                                                            answer: answer
+                                                        }
+                                                    });
+                                                    break;
+                                                default :
+                                                    alert('unkown status');
+                                                    break;
+                                            }
+                                        }
+                                );
+                            }else if(result==='delete'){
+                                $.post('/admin/removeRandomQuestion',{
+                                            id: row._id
+                                        }, function(data, status){
+                                            switch (status){
+                                                case 'success':
+                                                    alert('status '+ status);
+                                                    //remove the row which was selected from table
+                                                    $('#tbfQuestion').bootstrapTable('remove', {
+                                                        field: '_id',
+                                                        values: [row._id]
+                                                    });
+                                                    break;
+                                                default :
+                                                    alert('unkown status');
+                                                    break;
+                                            }
+                                        }
+                                );
+                            }else{
+                            }
+                        });
+                    },
+
+                    //==== User
+                    'click .user-actions': function(e, value, row, index){
+                        overrideBootstrapConfirm(4);
+                        var birthday = new Date(row.birthday);
+                        var modal =
+                            '<form>'+
+                                '<div class="form-group">'+
+                                '<label for="recipient-name" class="control-label">id:</label>'+
+                                '<input type="text" class="form-control" name="id" id="id" readonly value='+row._id+'>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                '<label for="recipient-name" class="control-label">Name:</label>'+
+                                '<input type="text" class="form-control" name="name" id="name" value='+row.name+'>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                '<label for="recipient-name" class="control-label">Email:</label>'+
+                                '<input type="text" class="form-control" name="email" id="email" value='+row.email+'>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                '<label for="recipient-name" class="control-label">Password:</label>'+
+                                '<input type="text" class="form-control" name="password" id="password" value='+row.password+'>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                '<label for="recipient-name" class="control-label">Birthday:</label>'+
+                                '<input type="date" class="form-control" name="birthday" id="date" value=>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                '<label for="recipient-name" class="control-label">Birthplace:</label>'+
+                                '<input type="text" class="form-control" name="birthplace" id="birthplace" value='+row.birthplace+'>'+
+                                '</div>'+
+
+                            '</form>';
+
+                        BootstrapDialog.confirm($(modal), function(result){
+                            if(result==='add') {
+                                var form = $('.modal form');
+                                var name = form.find('input[name="name"]').val();
+                                var email = form.find('input[name="email"]').val();
+                                var password = form.find('input[name="password"]').val();
+                                var birthday = form.find('input[name="birthday"]').val();
+                                var birthplace = form.find('input[name="birthplace"]').val();
+                                $.post('/admin/addUser',{
+                                            name: name,
+                                            email: email,
+                                            password: password,
+                                            birthday: birthday,
+                                            birthplace: birthplace
+                                        }, function(data, status){
+                                            switch (status){
+                                                case 'success':
+                                                    alert('status '+ status);
+                                                    break;
+                                                default :
+                                                    alert('unkown status');
+                                                    break;
+                                            }
+                                        }
+                                );
+                            }else if(result === 'update'){
+                                var form = $('.modal form');
+                                var id = form.find('input[name="id"]').val();
+                                var name = form.find('input[name="name"]').val();
+                                var email = form.find('input[name="email"]').val();
+                                var password = form.find('input[name="password"]').val();
+                                var birthday = form.find('input[name="birthday"]').val();
+                                var birthplace = form.find('input[name="birthplace"]').val();
+                                $.post('/admin/updateUser',{
+                                            id: id,
+                                            name: name,
+                                            email: email,
+                                            password: password,
+                                            birthday: birthday,
+                                            birthplace: birthplace
+                                        }, function(data, status){
+                                            switch (status){
+                                                case 'success':
+                                                    alert('status '+ status);
+                                                    $('#tbUser').bootstrapTable('updateRow', {
+                                                        index: index,
+                                                        row: {
+                                                            email: email,
+                                                            password: password,
+                                                            name: name,
+                                                            birthday: birthday,
+                                                            birthplace: birthplace
+                                                        }
+                                                    });
+                                                    break;
+                                                default :
+                                                    alert('unkown status');
+                                                    break;
+                                            }
+                                        }
+                                );
+                            }else if(result==='delete'){
+                                var form = $('.modal form');
+                                var id = form.find('input[name="id"]').val();
+                                $.post('/admin/deleteUser',{
+                                            id: id
+                                        }, function(data, status){
+                                            switch (status){
+                                                case 'success':
+                                                    alert('status '+ status);
+                                                    //remove the row which was selected from table
+                                                    $('#tbUser').bootstrapTable('remove', {
+                                                        field: '_id',
+                                                        values: [row._id]
+                                                    });
+                                                    break;
+                                                default :
+                                                    alert('unkown status');
+                                                    break;
+                                            }
+                                        }
+                                );
+                            }else{
+                            }
+                        });
+                    }
+                };
+
+            function overrideBootstrapConfirm(type){
+                if(type === 2){
+                    //customize bootstrap-dialog
+                    BootstrapDialog.confirm = function(message, callback) {
+                        new BootstrapDialog({
+                            title: 'Confirmation',
+                            message: message,
+                            closable: false,
+                            data: {
+                                'callback': callback
+                            },
+                            buttons: [{
+                                label: 'Delete',
+                                action: function(dialog) {
+                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')(true);
+                                    dialog.close();
+                                }
+                            }, {
+                                label: 'Cancel',
+                                cssClass: 'btn-primary',
+                                action: function(dialog) {
+                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')(false);
+                                    dialog.close();
+                                }
+                            }]
+                        }).open();
+                    };
+                }else{
+                    BootstrapDialog.confirm = function(message, callback) {
+                        new BootstrapDialog({
+                            title: 'Confirmation',
+                            message: message,
+                            closable: false,
+                            data: {
+                                'callback': callback
+                            },
+                            buttons: [{
+                                label: 'Cancel',
+                                action: function(dialog) {
+                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')('cancel');
+                                    dialog.close();
+                                }
+                            }, {
+                                label: 'Add',
+                                action: function(dialog) {
+                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')('add');
+                                    dialog.close();
+                                }
+                            }, {
+                                label: 'Update',
+                                cssClass: 'btn-primary',
+                                action: function(dialog) {
+                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')('update');
+                                    dialog.close();
+                                }
+                            }, {
+                                label: 'Delete',
+                                cssClass: 'btn-primary',
+                                action: function(dialog) {
+                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')('delete');
+                                    dialog.close();
+                                }
+                            }]
+                        }).open();
+                    };
+                }
+            }
+            //set date format
+            Date.prototype.yyyymmdd = function() {
+                var yyyy = this.getFullYear().toString();
+                var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+                var dd  = this.getDate().toString();
+
+                return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+            };
+            </script>
+
+        </div>
+
+    </div>
+</section>
+<!--/Section: random question-->
 
 <footer>
     <div class="container">
