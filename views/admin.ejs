@@ -52,10 +52,11 @@
                 <li><a href="#gettingstart">Feedback</a></li>
                 <li><a href="#question">Question</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Others<b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"  data-toggle="modal" data-target="#signModal">Đăng Kí</a></li>
-                        <li><a href="#" data-toggle="modal" data-target="#loginModal">Đăng Nhập</a></li>
+                        <li><a href="#user">User</a></li>
+                        <li><a href="#gettingstart">Feedback</a></li>
+                        <li><a href="#question">Question</a></li>
                         <li><a href="/admin/logout">logout</a></li>
                     </ul>
                 </li>
@@ -86,7 +87,7 @@
                 <div class="col-lg-8 col-lg-offset-2">
                     <div class="wow bounceInDown" data-wow-delay="0.4s">
                         <div class="section-heading">
-                            <h2>Quản lý account</h2>
+                            <h2>Accounts</h2>
                             <i class="fa fa-2x fa-angle-down"></i>
 
                         </div>
@@ -179,7 +180,15 @@
                     });
                     function operateUserFormatter(value, row, index) {
                         return [
-                            '<a class="user-actions ml10" href="javascript:void(0)" title="User Actions">',
+                            '<a class="add-user ml10" href="javascript:void(0)" title="Add User">',
+                            '<i class="fa fa-ban"></i>',
+                            '</a>',
+
+                            '<a class="update-user ml10" href="javascript:void(0)" title="Update User">',
+                            '<i class="fa fa-ban"></i>',
+                            '</a>',
+
+                            '<a class="delete-user ml10" href="javascript:void(0)" title="Delete User">',
                             '<i class="fa fa-ban"></i>',
                             '</a>'
                         ].join('');
@@ -406,7 +415,13 @@
 
                 function operateQuestionFormatter(value, row, index) {
                     return [
-                        '<a class="question-actions ml10" href="javascript:void(0)" title="Random Question Actions">',
+                        '<a class="add-question ml10" href="javascript:void(0)" title="Add Random Question">',
+                        '<i class="fa fa-ban"></i>',
+                        '</a>',
+                        '<a class="update-question ml10" href="javascript:void(0)" title="Update Random Question">',
+                        '<i class="fa fa-ban"></i>',
+                        '</a>',
+                        '<a class="delete-question ml10" href="javascript:void(0)" title="Delete Random Question">',
                         '<i class="fa fa-ban"></i>',
                         '</a>'
                     ].join('');
@@ -415,30 +430,34 @@
                 window.operateEvents = {
                     //==== Feedback
                     'click .fb-actions': function (e, value, row, index) {
-                        overrideBootstrapConfirm(2);
+                        overrideBootstrapConfirm('delete');
                         var modal =
                             '<form>'+
                                 '<div class="form-group">'+
-                                    '<label for="recipient-name" class="control-label">id:</label>'+
+                                '<label id="warning" class="" for="recipient-name" class="control-label"></label>'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">ID:</label>'+
                                     '<input type="text" class="form-control" id="id" readonly value='+row._id+'>'+
                                 '</div>'+
 
                                 '<div class="form-group">'+
-                                    '<label for="recipient-name" class="control-label">email:</label>'+
+                                    '<label for="recipient-name" class="control-label">Email:</label>'+
                                     '<input type="text" class="form-control" id="email" readonly value='+row.email+'>'+
                                 '</div>'+
 
                                 '<div class="form-group">'+
-                                    '<label for="recipient-name" class="control-label">content</label>'+
+                                    '<label for="recipient-name" class="control-label">Content</label>'+
                                     '<textarea class="form-control" id="content" readonly rows="10" cols="50">'+row.content+'</textarea>'+
                                 '</div>'+
                                 '<div class="form-group">'+
-                                    '<label for="recipient-name" class="control-label">date</label>'+
-                                    '<label id="date">'+row.date+'</label>'+
+                                    '<label for="recipient-name" class="control-label">Date: </label>'+
+                                    '<label id="date">'+row.date.split('T')[0]+'</label>'+
                                 '</div>'+
                             '</form>';
 
-                        BootstrapDialog.confirm($(modal), function(result){
+                        BootstrapDialog.confirm($(modal), function(result, dialog){
                             if(result) {
                                 //Return all selected rows, when no record selected, am empty array will return.
                                 //                        var selects = $('#tbfback').bootstrapTable('getSelections');
@@ -450,7 +469,11 @@
                                         }, function(data, status){
                                             switch (status){
                                                 case 'success':
-                                                    alert('jquery ajax: status '+ status + ' **** data: '+ data);
+                                                    $('#warning').text('status: '+ status);
+                                                    $('.modal form input').each(function(){
+                                                        $(this).val('');
+                                                    });
+                                                    $('.modal form textarea').val('');
                                                     //remove the row which was selected
                                                     $('#tbfback').bootstrapTable('remove', {
                                                         field: '_id',
@@ -480,196 +503,411 @@
                     },
 
                     //==== Question
-                    'click .question-actions': function(e, value, row, index){
-                        overrideBootstrapConfirm(4);
+                    'click .add-question': function(e, value, row, index){
+                        overrideBootstrapConfirm('Add');
                         var modal =
-                            '<form method="post">'+
+                            '<form>'+
                                 '<div class="form-group">'+
-                                    '<label for="recipient-name" class="control-label">ID</label>'+
-                                    '<input name="id" type="text" class="form-control" readonly id="id" value='+row._id+'>'+
+                                '<label id="warning" class="" for="recipient-name" class="control-label"></label>'+
                                 '</div>'+
 
                                 '<div class="form-group">'+
                                     '<label for="recipient-name" class="control-label">Question</label>'+
-                                    '<textarea class="form-control" name="question" id="question" rows="10" cols="50">'+row.question+'</textarea>'+
+                                    '<textarea class="form-control" name="question" id="question" rows="10" cols="50"></textarea>'+
                                 '</div>'+
 
                                 '<div class="form-group">'+
                                     '<label for="recipient-name" class="control-label">Answer</label>'+
-                                    '<input type="text" name="answer" class="form-control" id="answer" value='+row.answer+'>'+
+                                    '<input type="text" name="answer" class="form-control" id="answer">'+
                                 '</div>'+
                             '</form>';
 
-                        BootstrapDialog.confirm($(modal), function(result){
-                            if(result==='add') {
+                        BootstrapDialog.confirm($(modal), function(result, dialog){
+                            if(result) {
                                 var form = $('.modal form');
                                 var question = form.find('textarea[name="question"]').val();
                                 var answer = form.find('input[name="answer"]').val();
-                                $.post('/admin/addRandomQuestion',{
-                                            question: question,
-                                            answer: answer
-                                        }, function(data, status){
-                                            switch (status){
-                                                case 'success':
-                                                    alert('status '+ status);
-                                                    break;
-                                                default :
-                                                    alert('unkown status');
-                                                    break;
+                                if(question === ''){
+                                    $('#warning').text('Question was empty!');
+                                }else if(answer === ''){
+                                    $('#warning').text('Answer was empty!');
+                                }else{
+                                    $.post('/admin/addRandomQuestion',{
+                                                question: question,
+                                                answer: answer
+                                            }, function(data, status){
+                                                switch (status){
+                                                    case 'success':
+                                                        $('#warning').text('status '+ status);
+                                                        form.find('textarea[name="question"]').val('');
+                                                        form.find('input[name="answer"]').val('');
+                                                        break;
+                                                    default :
+                                                        alert('unkown status');
+                                                        break;
+                                                }
                                             }
-                                        }
-                                );
-                            }else if(result === 'update'){
+                                    );
+                                }
+                            }
+                        });
+                    },
+
+                    'click .update-question': function(e, value, row, index){
+                        overrideBootstrapConfirm('update');
+                        var modal =
+                                '<form>'+
+                                    '<div class="form-group">'+
+                                    '<label id="warning" class="" for="recipient-name" class="control-label"></label>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">ID</label>'+
+                                    '<input name="id" type="text" class="form-control" readonly id="id" value='+row._id+'>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Question</label>'+
+                                    '<textarea class="form-control" name="question" id="question" rows="10" cols="50">'+row.question+'</textarea>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Answer</label>'+
+                                    '<input type="text" name="answer" class="form-control" id="answer" value='+row.answer+'>'+
+                                    '</div>'+
+                                '</form>';
+                        BootstrapDialog.confirm($(modal), function(result, dialog){
+                            if(result){
                                 var form = $('.modal form');
                                 var id = form.find('input[name="id"]').val();
                                 var question = form.find('textarea[name="question"]').val();
                                 var answer = form.find('input[name="answer"]').val();
-                                $.post('/admin/updateRandomQuestion',{
-                                            id: id,
-                                            question: question,
-                                            answer: answer
-                                        }, function(data, status){
-                                            switch (status){
-                                                case 'success':
-                                                    alert('status '+ status);
-                                                    $('#tbfQuestion').bootstrapTable('updateRow', {
-                                                        index: index,
-                                                        row: {
-                                                            question: question,
-                                                            answer: answer
-                                                        }
-                                                    });
-                                                    break;
-                                                default :
-                                                    alert('unkown status');
-                                                    break;
+                                if(id===''){
+                                    $('#warning').text('ID was empty');
+                                }else if(question===''){
+                                    $('#warning').text('the Question was empty');
+                                }else if(answer===''){
+                                    $('#warning').text('the answer was empty');
+                                }else{
+                                    $.post('/admin/updateRandomQuestion',{
+                                                id: id,
+                                                question: question,
+                                                answer: answer
+                                            }, function(data, status){
+                                                switch (status){
+                                                    case 'success':
+                                                        $('#warning').text('status '+ status);
+                                                        $('#tbfQuestion').bootstrapTable('updateRow', {
+                                                            index: index,
+                                                            row: {
+                                                                question: question,
+                                                                answer: answer
+                                                            }
+                                                        });
+                                                        form.find('input[name="id"]').val('');
+                                                        form.find('textarea[name="question"]').val('');
+                                                        form.find('input[name="answer"]').val('');
+                                                        break;
+                                                    default :
+                                                        $('#warning').text('unkown status');
+                                                        break;
+                                                }
                                             }
-                                        }
-                                );
-                            }else if(result==='delete'){
+                                    );
+                                }
+                            }
+                        });
+                    },
+
+                    'click .delete-question': function(e, value, row, index){
+                        overrideBootstrapConfirm('delete');
+                        var modal =
+                                '<form>'+
+                                    '<div class="form-group">'+
+                                    '<label id="warning" class="" for="recipient-name" class="control-label"></label>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">ID</label>'+
+                                    '<input name="id" type="text" class="form-control" readonly id="id" value='+row._id+'>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Question</label>'+
+                                    '<textarea class="form-control" name="question" id="question" readonly rows="10" cols="50">'+row.question+'</textarea>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Answer</label>'+
+                                    '<input type="text" name="answer" class="form-control" id="answer" readonly value='+row.answer+'>'+
+                                    '</div>'+
+                                '</form>';
+                        BootstrapDialog.confirm($(modal), function(result){
+                            if(result){
                                 $.post('/admin/removeRandomQuestion',{
-                                            id: row._id
-                                        }, function(data, status){
-                                            switch (status){
-                                                case 'success':
-                                                    alert('status '+ status);
-                                                    //remove the row which was selected from table
-                                                    $('#tbfQuestion').bootstrapTable('remove', {
-                                                        field: '_id',
-                                                        values: [row._id]
-                                                    });
-                                                    break;
-                                                default :
-                                                    alert('unkown status');
-                                                    break;
-                                            }
+                                        id: row._id
+                                    }, function(data, status){
+                                        switch (status){
+                                            case 'success':
+                                                $('#warning').text('status '+ status);
+                                                $('.modal form input').each(function(){
+                                                    $(this).val('');
+                                                });
+                                                $('.modal form textarea').val('');
+                                                //remove the row which was selected from table
+                                                $('#tbfQuestion').bootstrapTable('remove', {
+                                                    field: '_id',
+                                                    values: [row._id]
+                                                });
+                                                break;
+                                            default :
+                                                alert('unkown status');
+                                                break;
                                         }
+                                    }
                                 );
-                            }else{
                             }
                         });
                     },
 
                     //==== User
-                    'click .user-actions': function(e, value, row, index){
-                        overrideBootstrapConfirm(4);
+                    'click .add-user': function(e, value, row, index){
+                        overrideBootstrapConfirm('add');
                         var birthday = new Date(row.birthday);
                         var modal =
                             '<form>'+
                                 '<div class="form-group">'+
-                                '<label for="recipient-name" class="control-label">id:</label>'+
-                                '<input type="text" class="form-control" name="id" id="id" readonly value='+row._id+'>'+
+                                '<label id="warning" class="" for="recipient-name" class="control-label"></label>'+
                                 '</div>'+
 
                                 '<div class="form-group">'+
                                 '<label for="recipient-name" class="control-label">Name:</label>'+
-                                '<input type="text" class="form-control" name="name" id="name" value='+row.name+'>'+
+                                '<input type="text" class="form-control" name="name" id="name" readonly'+
                                 '</div>'+
 
                                 '<div class="form-group">'+
                                 '<label for="recipient-name" class="control-label">Email:</label>'+
-                                '<input type="text" class="form-control" name="email" id="email" value='+row.email+'>'+
+                                '<input type="text" class="form-control" name="email" id="email" readonly'+
                                 '</div>'+
 
                                 '<div class="form-group">'+
                                 '<label for="recipient-name" class="control-label">Password:</label>'+
-                                '<input type="text" class="form-control" name="password" id="password" value='+row.password+'>'+
+                                '<input type="text" class="form-control" name="password" id="password" readonly'+
+                                '</div>'+
+
+                                '<div class="form-group">'+
+                                '<label for="recipient-name" class="control-label">Pre Password:</label>'+
+                                '<input type="text" class="form-control" name="password2" id="password2" readonly'+
                                 '</div>'+
 
                                 '<div class="form-group">'+
                                 '<label for="recipient-name" class="control-label">Birthday:</label>'+
-                                '<input type="date" class="form-control" name="birthday" id="date" value=>'+
+                                '<input type="date" class="form-control" name="birthday" id="date" readonly'+
                                 '</div>'+
 
                                 '<div class="form-group">'+
                                 '<label for="recipient-name" class="control-label">Birthplace:</label>'+
-                                '<input type="text" class="form-control" name="birthplace" id="birthplace" value='+row.birthplace+'>'+
+                                '<input type="text" class="form-control" name="birthplace" id="birthplace" readonly'+
                                 '</div>'+
 
                             '</form>';
 
-                        BootstrapDialog.confirm($(modal), function(result){
-                            if(result==='add') {
+                        BootstrapDialog.confirm($(modal), function(result, dialog){
+                            if(result) {
                                 var form = $('.modal form');
                                 var name = form.find('input[name="name"]').val();
                                 var email = form.find('input[name="email"]').val();
                                 var password = form.find('input[name="password"]').val();
+                                var password2 = form.find('input[name="password2"]').val();
                                 var birthday = form.find('input[name="birthday"]').val();
                                 var birthplace = form.find('input[name="birthplace"]').val();
-                                $.post('/admin/addUser',{
-                                            name: name,
-                                            email: email,
-                                            password: password,
-                                            birthday: birthday,
-                                            birthplace: birthplace
-                                        }, function(data, status){
-                                            switch (status){
-                                                case 'success':
-                                                    alert('status '+ status);
-                                                    break;
-                                                default :
-                                                    alert('unkown status');
-                                                    break;
+                                if(name === ''){
+                                    $('#warning').text('Name was empty!');
+                                }else if(email===''){
+                                    $('#warning').text('Email was empty!');
+                                }else if(password ===''){
+                                    $('#warning').text('Password was empty!');
+                                }else if(password2 === ''){
+                                    $('#warning').text('Password was empty!');
+                                }else if(password !== password2){
+                                    $('#warning').text('Passwords wasn\'t math');
+                                }else if(birthday===''){
+                                    $('#warning').text('Birthday was empty!')
+                                }else if(birthplace===''){
+                                    $('#warning').text('Birthplace was empty!');
+                                }else{
+                                    $.post('/admin/addUser',{
+                                                name: name,
+                                                email: email,
+                                                password: password,
+                                                birthday: birthday,
+                                                birthplace: birthplace
+                                            }, function(data, status){
+                                                switch (status){
+                                                    case 'success':
+                                                        $('#warning').text('status '+ status);
+                                                        $('.modal form input').each(function(){
+                                                            $(this).val('');
+                                                        });
+                                                        break;
+                                                    default :
+                                                        alert('unkown status');
+                                                        break;
+                                                }
                                             }
-                                        }
-                                );
-                            }else if(result === 'update'){
+                                    );
+                                }
+                            }
+                        });
+                    },
+
+                    'click .update-user': function(e, value, row, index){
+                        overrideBootstrapConfirm('update');
+                        if(row.birthday === '')
+                            var birthday = row.birthday.split('T')[0];
+                        var modal =
+                                '<form>'+
+                                    '<div class="form-group">'+
+                                    '<label id="warning" class="" for="recipient-name" class="control-label"></label>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">id:</label>'+
+                                    '<input type="text" class="form-control" name="id" id="id" readonly value='+row._id+'>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Name:</label>'+
+                                    '<input type="text" class="form-control" name="name" id="name" value='+row.name+'>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Email:</label>'+
+                                    '<input type="text" class="form-control" name="email" id="email" value='+row.email+'>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Password:</label>'+
+                                    '<input type="text" class="form-control" name="password" id="password">'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Pre Password:</label>'+
+                                    '<input type="text" class="form-control" name="password2" id="password2" readonly'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Birthday:</label>'+
+                                    '<input type="date" class="form-control" name="birthday" id="date" value="'+ birthday +'">'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Birthplace:</label>'+
+                                    '<input type="text" class="form-control" name="birthplace" id="birthplace" value='+row.birthplace+'>'+
+                                    '</div>'+
+                                '</form>';
+                        BootstrapDialog.confirm($(modal), function(result, dialog){
+                            if(result){
                                 var form = $('.modal form');
                                 var id = form.find('input[name="id"]').val();
                                 var name = form.find('input[name="name"]').val();
                                 var email = form.find('input[name="email"]').val();
                                 var password = form.find('input[name="password"]').val();
+                                var password2 = form.find('input[name="password2"]').val();
                                 var birthday = form.find('input[name="birthday"]').val();
                                 var birthplace = form.find('input[name="birthplace"]').val();
-                                $.post('/admin/updateUser',{
-                                            id: id,
-                                            name: name,
-                                            email: email,
-                                            password: password,
-                                            birthday: birthday,
-                                            birthplace: birthplace
-                                        }, function(data, status){
-                                            switch (status){
-                                                case 'success':
-                                                    alert('status '+ status);
-                                                    $('#tbUser').bootstrapTable('updateRow', {
-                                                        index: index,
-                                                        row: {
-                                                            email: email,
-                                                            password: password,
-                                                            name: name,
-                                                            birthday: birthday,
-                                                            birthplace: birthplace
-                                                        }
-                                                    });
-                                                    break;
-                                                default :
-                                                    alert('unkown status');
-                                                    break;
+
+                                if(name === ''){
+                                    $('#warning').text('Name was empty!');
+                                }else if(email===''){
+                                    $('#warning').text('Email was empty!');
+                                }else if(password ===''){
+                                    $('#warning').text('Password was empty!');
+                                }else if(password2 === ''){
+                                    $('#warning').text('Password was empty!');
+                                }else if(password !== password2){
+                                    $('#warning').text('Passwords wasn\'t math');
+                                }else if(birthday===''){
+                                    $('#warning').text('Birthday was empty!')
+                                }else if(birthplace===''){
+                                    $('#warning').text('Birthplace was empty!');
+                                }else {
+                                    $.post('/admin/updateUser',{
+                                                id: id,
+                                                name: name,
+                                                email: email,
+                                                password: password,
+                                                birthday: birthday,
+                                                birthplace: birthplace
+                                            }, function(data, status){
+                                                switch (status){
+                                                    case 'success':
+                                                        $('#warning').text('status '+ status);
+                                                        $('#tbUser').bootstrapTable('updateRow', {
+                                                            index: index,
+                                                            row: {
+                                                                email: email,
+                                                                password: password,
+                                                                name: name,
+                                                                birthday: birthday,
+                                                                birthplace: birthplace
+                                                            }
+                                                        });
+                                                        break;
+                                                    default :
+                                                        alert('unkown status');
+                                                        break;
+                                                }
                                             }
-                                        }
-                                );
-                            }else if(result==='delete'){
+                                    );
+                                }
+                            }
+                        });
+                    },
+
+                    'click .delete-user': function(e, value, row, index){
+                        overrideBootstrapConfirm('delete');
+                        if(row.birthday === '')
+                            var birthday = row.birthday.split('T')[0];
+                        var modal =
+                                '<form>'+
+                                    '<div class="form-group">'+
+                                    '<label id="warning" class="" for="recipient-name" class="control-label"></label>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">id:</label>'+
+                                    '<input type="text" class="form-control" name="id" id="id" readonly value='+row._id+'>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Name:</label>'+
+                                    '<input type="text" class="form-control" name="name" id="name" value='+row.name+'>'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Email:</label>'+
+                                    '<input type="text" class="form-control" name="email" id="email">'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Password:</label>'+
+                                    '<input type="text" class="form-control" name="password" id="password">'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Birthday:</label>'+
+                                    '<input type="date" class="form-control" name="birthday" id="date" value="'+ birthday +'">'+
+                                    '</div>'+
+
+                                    '<div class="form-group">'+
+                                    '<label for="recipient-name" class="control-label">Birthplace:</label>'+
+                                    '<input type="text" class="form-control" name="birthplace" id="birthplace" value='+row.birthplace+'>'+
+                                    '</div>'+
+                                '</form>';
+
+                        BootstrapDialog.confirm($(modal), function(result, dialog){
+                            if(result){
                                 var form = $('.modal form');
                                 var id = form.find('input[name="id"]').val();
                                 $.post('/admin/deleteUser',{
@@ -677,7 +915,10 @@
                                         }, function(data, status){
                                             switch (status){
                                                 case 'success':
-                                                    alert('status '+ status);
+                                                    $('#warning').text('status: '+ status);
+                                                    $('.modal form input').each(function(){
+                                                        $(this).val('');
+                                                    });
                                                     //remove the row which was selected from table
                                                     $('#tbUser').bootstrapTable('remove', {
                                                         field: '_id',
@@ -690,78 +931,36 @@
                                             }
                                         }
                                 );
-                            }else{
                             }
                         });
                     }
                 };
 
-            function overrideBootstrapConfirm(type){
-                if(type === 2){
-                    //customize bootstrap-dialog
-                    BootstrapDialog.confirm = function(message, callback) {
-                        new BootstrapDialog({
-                            title: 'Confirmation',
-                            message: message,
-                            closable: false,
-                            data: {
-                                'callback': callback
-                            },
-                            buttons: [{
-                                label: 'Delete',
-                                action: function(dialog) {
-                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')(true);
-                                    dialog.close();
-                                }
-                            }, {
-                                label: 'Cancel',
-                                cssClass: 'btn-primary',
-                                action: function(dialog) {
-                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')(false);
-                                    dialog.close();
-                                }
-                            }]
-                        }).open();
-                    };
-                }else{
-                    BootstrapDialog.confirm = function(message, callback) {
-                        new BootstrapDialog({
-                            title: 'Confirmation',
-                            message: message,
-                            closable: false,
-                            data: {
-                                'callback': callback
-                            },
-                            buttons: [{
-                                label: 'Cancel',
-                                action: function(dialog) {
-                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')('cancel');
-                                    dialog.close();
-                                }
-                            }, {
-                                label: 'Add',
-                                action: function(dialog) {
-                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')('add');
-                                    dialog.close();
-                                }
-                            }, {
-                                label: 'Update',
-                                cssClass: 'btn-primary',
-                                action: function(dialog) {
-                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')('update');
-                                    dialog.close();
-                                }
-                            }, {
-                                label: 'Delete',
-                                cssClass: 'btn-primary',
-                                action: function(dialog) {
-                                    typeof dialog.getData('callback') === 'function' && dialog.getData('callback')('delete');
-                                    dialog.close();
-                                }
-                            }]
-                        }).open();
-                    };
-                }
+            function overrideBootstrapConfirm(str1){
+                //customize bootstrap-dialog
+                BootstrapDialog.confirm = function(message, callback) {
+                    new BootstrapDialog({
+                        title: 'Confirmation',
+                        message: message,
+                        closable: false,
+                        data: {
+                            'callback': callback
+                        },
+                        buttons: [{
+                            label: str1,
+                            action: function(dialog) {
+                                typeof dialog.getData('callback') === 'function' && dialog.getData('callback')(true, dialog);
+                            }
+                        }, {
+                            label: 'Cancel',
+                            cssClass: 'btn-primary',
+                            action: function(dialog) {
+                                typeof dialog.getData('callback') === 'function' && dialog.getData('callback')(false, dialog);
+                                dialog.close();
+                            }
+                        }]
+                    }).open();
+                };
             }
             //set date format
             Date.prototype.yyyymmdd = function() {

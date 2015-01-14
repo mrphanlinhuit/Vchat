@@ -103,7 +103,7 @@ module.exports = function(app, passport){
     app.route('/admin/logout')
         .get(function(req, res, next){
             req.logout();
-            res.redirect('/');
+            res.redirect('/admin');
         })
         .post();
 
@@ -235,7 +235,7 @@ module.exports = function(app, passport){
         .post(isLoggedIn, function(req, res, next){
             var newUser = new userModel();
             newUser.email = req.body.email;
-            newUser.password = req.body.password;
+            newUser.password = newUser.generateHash(req.body.password);
             newUser.name = req.body.name;
             newUser.birthday = req.body.birthday;
             newUser.birthplace = req.body.birthplace;
@@ -250,9 +250,10 @@ module.exports = function(app, passport){
     app.route('/admin/updateUser')
         .get()
         .post(isLoggedIn, function (req, res, next) {
+            var newUser = new userModel();
             var id = req.body.id;
             var email = req.body.email;
-            var password = req.body.password;
+            var password = newUser.generateHash(req.body.password);
             var name = req.body.name;
             var birthday = req.body.birthday;
             var birthplace = req.body.birthplace;
@@ -282,5 +283,5 @@ function isLoggedIn(req, res, next){
     }
     //if they aren't, redirect them to home page.
     console.log('user didnt logg in');
-    res.redirect('/');
+    res.redirect('/admin/login');
 }
