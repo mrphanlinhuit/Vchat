@@ -31,7 +31,7 @@ module.exports = function(app, passport){
             res.render('chat');
         })
         .post(function(req, res, next){
-            console.log('>> create new room: ', req.body);
+
             res.render('chat', {data: req.body});
         });
 
@@ -40,7 +40,6 @@ module.exports = function(app, passport){
             res.render('index');
         })
         .post(function(req, res, next){
-            console.log('>> join room: ', req.body);
             res.render('chat', {data: req.body});
         });
 

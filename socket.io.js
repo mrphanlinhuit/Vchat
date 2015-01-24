@@ -84,6 +84,39 @@ module.exports = function(server){
                     console.log('owner left');
                 }
             });
+
+            //remote board
+            socket.on('drawClick', function(data) {
+                socket.broadcast.emit('draw', {
+                    x: data.x,
+                    y: data.y,
+                    type: data.type
+                });
+            });
+
+            socket.on('clear', function() {
+                socket.broadcast.emit('allClear',{
+
+                });
+            });
+
+            socket.on('changeColor',function(data){
+                socket.broadcast.emit('changeColor',{
+                    'color':data.color
+                });
+            });
+
+            socket.on('changeBG',function(data){
+                socket.broadcast.emit('changeBG',{
+                    'color':data.color
+                });
+            });
+
+            socket.on('changeWidth',function(data){
+                socket.broadcast.emit('changeWidth',{
+                    'wid':data.wid
+                });
+            });
         });
     }
 };

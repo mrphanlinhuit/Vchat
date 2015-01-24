@@ -38,6 +38,31 @@
 
     </style>
 
+    <!-- Core JavaScript Files -->
+
+    <script src="./js/jquery-2.1.3.min.js"></script>
+    <script src="./js/Sizzle.js"></script>
+
+    <script src='/socket.io/socket.io.js'></script>
+    <script src="./js/RTCMultiConnection-v2.2.3.js"></script>
+
+    <!--<script src="./js/jquery.min.js"></script>-->
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/jquery.easing.min.js"></script>
+    <script src="./js/jquery.scrollTo.js"></script>
+    <script src="./js/wow.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="./js/custom.js"></script>
+    <script src="./js/jquery-ui.min.js"></script>
+    <script src="./js/jquery.snow.js"></script>
+
+    <script  src="./js/RTCSignaling.js"></script>
+    <script type="text/javascript" src="./js/functions.js"></script>
+    <script type="text/javascript" src="./js/user-events.js"></script>
+
+    <script type="text/javascript" src="./js/jquery.event.drag-2.0.js"></script>
+    <script type="text/javascript" src="./js/remote-board.js"></script>
+
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-custom">
@@ -52,7 +77,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
                     <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="index">
+                <a class="navbar-brand" href="/">
                     <img src="./images/logo.png">
                     <hr class="marginbot-0">
                 </a>
@@ -61,10 +86,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#intro">Home</a></li>
+        <li class="active"><a href="/">Home</a></li>
         <li><a href="#chatarea">Video Chat</a></li>
+          <li><a href="#board">Remote Board</a></li>
         <li><a href="#about">About</a></li>
-		<li><a href="#contact">Contact</a></li>
+		<li><a href="/#contact">Feedback</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
           <ul class="dropdown-menu">
@@ -108,7 +134,7 @@
                                 <div id="chatContent">
                                     <a href="#" class="list-group-item active">
                                         <h4 class="list-group-item-heading">Name of friend</h4>
-                                        <button class="btn btn-transparent" id="hideChat" onclick="hideChat()">
+                                        <button class="btn btn-transparent" id="hideChat">
                                             <i class="fa fa-times"></i>
                                         </button>
                                     </a>
@@ -117,7 +143,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <input id="tbChat" type="text"  class="form-control" placeholder="Chat" onclick="showChat()">
+                                    <input id="tbChat" type="text"  class="form-control" placeholder="Chat">
                                 </div>
                                 <audio id="chatSoundEffect" hidden="true">
                                     <source src="soundeffects/knocking_on_single_pane_glass_window_x_3.mp3" type="audio/mpeg" >
@@ -142,6 +168,31 @@
     </section>
     <!-- /Section: Chat Areq -->
 
+    <!-- Section: Board -->
+    <section id="board" class="home-section text-center">
+        <div class="heading-about">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="wow bounceInDown" data-wow-delay="0.4s">
+                            <div class="section-heading">
+                                <h2>Remote Board</h2>
+                                <i class="fa fa-2x fa-angle-down"></i>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <article></article>
+            </div>
+        </div>
+
+    </section>
+    <!-- /Section: Board -->
 
     <!-- Section: about -->
     <section id="about" class="home-section text-center">
@@ -342,52 +393,11 @@
 			</div>
 		</div>
 	</footer>
-
-    <!-- Core JavaScript Files -->
-
-    <script src="./js/jquery-2.1.3.min.js"></script>
-    <script src='/socket.io/socket.io.js'></script>
-    <script src="./js/RTCMultiConnection-v2.2.3.js"></script>
-    <script  src="./js/RTCSignaling.js"></script>
-    <script type="text/javascript" src="./js/functions.js"></script>
-    <script type="text/javascript" src="./js/user-events.js"></script>
-    <!--<script src="./js/jquery.min.js"></script>-->
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/jquery.easing.min.js"></script>
-	<script src="./js/jquery.scrollTo.js"></script>
-	<script src="./js/wow.min.js"></script>
-    <!-- Custom Theme JavaScript -->
-    <script src="./js/custom.js"></script>
-    <script src="./js/jquery-ui.min.js"></script>
-    <script src="./js/jquery.snow.js"></script>
     <script>
         $(document).ready( function(){
-            $.fn.snow();
+//            $.fn.snow();
         });
     </script>
-
-    <script>
-        var showCtrl = false;
-        function hideChat(){
-            $("#chatContent").hide();
-        }
-        hideChat();
-        function showChat(){
-            $("#chatContent").show();
-        }
-
-        function hideControls(){
-            $(".controls").hide();
-        }
-        hideControls();
-        function showControls(){
-            $(".controls").show;
-        }
-
-        $("#chatBox").draggable({ containment: "#chatarea" });
-    </script>
-
-
 </body>
 
 </html>

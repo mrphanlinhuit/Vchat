@@ -123,14 +123,11 @@ $(document).ready(function(){
 
                                                     //Video Tag
                                                     '<video class="img img-responsive" autoplay width="640" height="480" src='+e.blobURL+' id='+e.streamid+' controls muted>'+
-                                                    
                                                     '</video>'+
                                                ' </div>'+
                                             '</div>'+
                                         '</div>'+
-                                    '</div>');       
-
-                
+                                    '</div>');
                 //var $divVideo = $('<div class="video" id= '+e.userid+' >' + '</div>');
                /* var $eVideo = $('<video class="img img-responsive" autoplay width="480" height="320" controls muted></video>');
                 $eVideo.attr({'src': e.blobURL, 'id': e.streamid});
@@ -138,7 +135,11 @@ $(document).ready(function(){
                 $divVideo.append($eVideo);
                 $divVideo.append($divControls);*/
                 $('#videoEle').append($divVideo);
-
+                if(e.type === 'local'){
+                    $('<div class="hidden" id="poster">' +
+                        '<i class="fa fa-pause"></i>'+
+                        '</div>').appendTo('.video');
+                }
                 $( ".video" ).draggable({ containment: "#chatarea" });//allow video element can drag and drop
                 videoElementEvent();
 
@@ -318,16 +319,16 @@ $(document).ready(function(){
 
         connection.onmute = function(e){
             if(e.isVideo){
-                $('#'+ e.streamid).attr('poster', 'images/nomovie.jpg');
+                alert('Your friend has just muted video stream!');
             }else{
-                alert('mute audio');
+                alert('our friend has just muted audio stream!');
             }
             console.log('____e: ', e);
         }
 
         connection.onunmute = function(e){
             if(e.isVideo){
-                $('#'+ e.streamid).removeAttr('poster');
+                $('#poster').addClass('hidden');
             }else{
                 alert('unmute audio');
             }

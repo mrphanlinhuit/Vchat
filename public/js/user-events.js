@@ -58,7 +58,6 @@ function videoElementEvent(){
 
     $('#sharingScreen').click(function(){
         alert('share screen');
-        console.log('___________screen sharing log here');
         connection.addStream({screen:true, oneway: true});
     });
 
@@ -66,14 +65,11 @@ function videoElementEvent(){
         var streamId = $(this).parent().parent().parent().children('video').attr('id');
         if(!muteVideo)
         {
-            alert('mute video');
-
             connection.streams[streamId].mute({video: true, local: true});
             muteVideo=true;
             //$(this).children().attr('class','fa fa-coffee');
         }
         else{
-            alert('unmute video');
             connection.streams[streamId].unmute({video:true, local: true});
             muteVideo = false;
             //$(this).children().attr('class','fa fa-video-camera');
@@ -108,3 +104,27 @@ function videoElementEvent(){
         $(this).css('z-index','10000');
     });
 }
+
+$(document).ready(function(){
+
+    $("#chatContent").hide();
+
+    $('#hideChat').click(function(e){
+        $("#chatContent").hide();
+    });
+
+    $('#tbChat').click(function(e){
+        $("#chatContent").show();
+    });
+
+    function hideControls(){
+        $(".controls").hide();
+    }
+    hideControls();
+
+    function showControls(){
+        $(".controls").show;
+    }
+
+    $("#chatBox").draggable({ containment: "#chatarea" });
+});

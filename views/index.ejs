@@ -18,143 +18,22 @@
     <!-- Squad theme CSS -->
     <link href="./css/style.css" rel="stylesheet">
 	<link href="./css/default.css" rel="stylesheet">
-
+    <!-- Core JavaScript Files -->
+    <script type="text/javascript" src='/js/jquery-2.1.3.min.js'></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/jquery.easing.min.js"></script>
+    <script src="./js/jquery.scrollTo.js"></script>
+    <script src="./js/wow.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="./js/custom.js"></script>
+    <script src="./js/jquery.snow.js"></script>
 
     <!--javascrip create room-->
-    <script type="text/javascript" src='/js/jquery-2.1.3.min.js'></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/js/md5.js"></script>
     <script type="text/javascript" src="/js/functions.js"></script>
 
-    <script>
-        $(document).ready(function(){
-            var socket = io.connect();
-            var createNewRoom = $("#create_button");
-            var joinRoom = $("#join_button");
-
-            createNewRoom.click(function(){
-                var roomName = $(this).prev().val();
-                if(roomName === ''){
-                    alert('you should have to enter a room name!');
-                    return false;
-                }
-                var hash = md5(roomName);
-                $(this).attr('disabled', 'true');
-                joinRoom.attr('disabled', 'true');
-
-
-                socket.emit('presence', hash);
-                socket.on('room-available', function(data){
-                    SendPostRequest('/newroom', {newRoom: 'yes', roomName: hash});
-                });
-                socket.on('room-existed', function(){
-                    alert('the room existed! \n Please choose another one ');
-                    createNewRoom.removeAttr('disabled');
-                    joinRoom.removeAttr('disabled');
-                });
-            });
-
-            joinRoom.click(function(){
-                var roomName = $(this).prev().val();
-                if(roomName === ''){
-                    alert('you should have to enter a room name!');
-                    return false;
-                }
-                var hash = md5(roomName);
-
-                $(this).attr('disabled', 'true');
-                createNewRoom.attr('disabled', 'true');
-
-                socket.emit('presence', hash);
-                socket.on('room-existed', function(){
-                    SendPostRequest('/joinroom', {newRoom: 'no', roomName: hash});
-                });
-                socket.on('room-available', function(){
-                    alert('the room hasn\'t created yet! \n Please sure the room is correct');
-                    joinRoom.removeAttr('disabled');
-                    createNewRoom.removeAttr('disabled');
-                });
-            });
-
-            $('#btnContactUs').click(function(e){
-                if($('#name').val() !== '')
-                    var name = $('#name').val();
-                else{
-                    alert('the name was empty');
-                    $('#name').focus();
-                    return false;
-                }
-
-                if($('#email').val() !== '')
-                    var email = $('#email').val();
-                else{
-                    alert('email was empty');
-                    $('#email').focus();
-                    return false;
-                }
-
-                if($('#subject').val() !== '')
-                    var subject = $('#subject').val();
-                else{
-                    alert('the subject was empty');
-                    $('#subject').focus();
-                    return false;
-                }
-
-                if($('#message').val() !== '')
-                    var content = $('#message').val();
-                else{
-                    alert('the content was empty');
-                    $('#subject').focus();
-                    return false;
-                }
-
-                if($('[name="idQuestion"]').val() !== ''){
-                    var idQuestion = $('[name="idQuestion"]').val();
-                }else alert('idQuestion is empty');
-
-                if($('[name="answer"]').val() !== ''){
-                    var answer = $('[name="answer"]').val();
-                }else alert('you have to answer the random question');
-
-                var honeyPot = $('#honeyPot').val();
-
-                $.post('/feedback',{
-                    name: name,
-                    email: email,
-                    subject: subject,
-                    content: content,
-                    honeyPot: honeyPot,
-                    idQuestion: idQuestion,
-                    answer: answer
-                }, function(data, status){
-                    switch (status){
-                        case 'success':
-                                if(data === 'ok')
-                                    alert('jquery ajax: status '+ status);
-                                else console.log('**** data: ', data);
-                            break;
-                        case 'notmodified':
-                            alert('notmodified');
-                            break;
-                        case 'error':
-                            alert('some error happended');
-                            break;
-                        case 'timeout':
-                            alert('request was timeout');
-                            break;
-                        case 'parsererror':
-                            alert('parsererror');
-                            break;
-                        default :
-                            alert('unkown status');
-                    }
-                });
-
-                e.preventDefault();
-            });
-        });
-    </script>
+    <script type="text/javascript" src="/js/index.js"></script>
 
 </head>
 
@@ -178,18 +57,18 @@
             <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
       <ul class="nav navbar-nav">
         <li class="active"><a href="#intro">Home</a></li>
-        <li><a href="#services">Dịch Vụ</a></li>
-		<li><a href="#gettingstart">Sử Dụng</a></li>
+        <li><a href="#services">Getting Started</a></li>
+		<li><a href="#gettingstart">Guide</a></li>
         <li><a href="#about">About</a></li>
-		<li><a href="#contact">Contact</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="#"  data-toggle="modal" data-target="#signModal">Đăng Kí</a></li>
-            <li><a href="/login" data-toggle="modal" data-target="#loginModal">Đăng Nhập</a></li>
-            <li><a href="#">Example menu</a></li>
-          </ul>
-        </li>
+		<li><a href="#contact">Feedback</a></li>
+        <!--<li class="dropdown">-->
+          <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>-->
+          <!--<ul class="dropdown-menu">-->
+            <!--<li><a href="#"  data-toggle="modal" data-target="#signModal">Đăng Kí</a></li>-->
+            <!--<li><a href="/login" data-toggle="modal" data-target="#loginModal">Đăng Nhập</a></li>-->
+            <!--<li><a href="#">Example menu</a></li>-->
+          <!--</ul>-->
+        <!--</li>-->
       </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -285,7 +164,7 @@
             <div class="col-md-offset-5">
                 <!-- createroom -->
                 <div id="room_entry">
-                    <h2>Tạo Phòng Mới</h2>
+                    <h2>tạo phòng mới</h2>
 
                     <div id="room-form" class="form-inline">
                         <p>
@@ -374,7 +253,7 @@
                             </div>
                             <div class="service-desc">
                                 <h5>Du lịch</h5>
-                                <p>Lập kế hoạch cho chuyến du lịch</p>
+                                <p>Chat trong khi đi du lịch</p>
                             </div>
                         </div>
                     </div>
@@ -629,19 +508,9 @@
                                 <input type="email" class="form-control" id="email" placeholder="Enter email" required="required" /></div>
                         </div>
                         <div class="form-group">
-                            <label for="subject">
-                                Subject</label>
-                            <select id="subject" name="subject" class="form-control" required="required">
-                                <option value="na" selected="">Choose One:</option>
-                                <option value="service">General Customer Service</option>
-                                <option value="suggestions">Suggestions</option>
-                                <option value="product">Product Support</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <p>câu hỏi ngẫu nhiên: <%=data.randQuestion.question%></p>
                             <input type="hidden" name="idQuestion" value="<%=data.randQuestion.id%>"/><br/>
-                            <input type="text" name="answer" class="form-control" required="required"/><br/>
+                            <input type="text" name="answer" class="form-control" required="required" placeholder="Enter the answer"/><br/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -712,18 +581,9 @@
 			</div>
 		</div>
 	</footer>
-
-    <!-- Core JavaScript Files -->
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/jquery.easing.min.js"></script>
-	<script src="./js/jquery.scrollTo.js"></script>
-	<script src="./js/wow.min.js"></script>
-    <!-- Custom Theme JavaScript -->
-    <script src="./js/custom.js"></script>
-    <script src="./js/jquery.snow.js"></script>
     <script>
         $(document).ready( function(){
-                $.fn.snow();
+//                $.fn.snow();
         });
     </script>
     <!--<script>
