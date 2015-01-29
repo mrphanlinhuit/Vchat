@@ -14,11 +14,12 @@ module.exports = function(server){
     ]);
 
     var channels = {};
-    var strUsersPerRoom = {};
+    var users = {};
+    var userPerRoom = {};
     var initiators = {};
 
     io.sockets.on('connection', function (socket) {
-        console.log('someone has connected');
+        console.log('someone has connected: ', socket.id);
 
         var initiatorChannel = '';
         if (!io.isConnected) {
@@ -26,18 +27,24 @@ module.exports = function(server){
         }
         socket.on('new-channel', function (data) {
             if (!channels[data.channel]) {
+                channels[data.channel] = data.channel;
                 initiatorChannel = data.channel;
-                strUsersPerRoom[data.channel] = socket.id +'';
+                userPerRoom[data.channel] = [];
+                userPerRoom[data.channel].push(socket.id);
 
                 console.log('####### initiatorChannel: ', initiatorChannel);
             }else{
                 socket.emit('existed');
-                strUsersPerRoom[data.channel] += '+'+ socket.id;
+                userPerRoom[data.channel].push(socket.id);
             }
-            channels[data.channel] = data.channel;
+            if(!users[socket.id]){
+                users[socket.id] = data.channel;
+            }
             onNewNamespace(data.channel, socket.id);
-            console.log('#### roomId: ', socket.roomId);
-            console.log('### channels: ', channels);
+
+            console.log('$$$$ userPerroom: ', userPerRoom);
+            console.log('$$$$ users: ', users);
+            console.log('channel: ', channels);
         });
 
         socket.on('presence', function (channel) {
@@ -51,6 +58,24 @@ module.exports = function(server){
 
         socket.on('disconnect', function () {
             console.log('user has just disconnected: ', socket.id);
+            if(users[socket.id]){
+                var channel = users[socket.id];
+                var usrs = userPerRoom[channel];
+                if(usrs.length > 0){
+                    for(var i=0; i< usrs.length; i++){
+                        if(userPerRoom[channel][i] === socket.id){
+                            userPerRoom[channel].splice(i, 1);
+                            if(userPerRoom[channel].length === 0){
+                                delete userPerRoom[channel];
+                            }
+                        }
+                    }
+                }
+                delete users[socket.id];
+                delete channels[channel];
+                console.log('#### disconnect channel: ', channels);
+            }
+
         });
     });
 
@@ -64,6 +89,10 @@ module.exports = function(server){
                 io.isConnected = false;
                 socket.emit('connect', true);
             }
+
+            socket.on('linh', function(data){
+                console.log('linh: ', data);
+            });
 
             socket.on('message', function (data) {
                 if (socket.id === sender) {

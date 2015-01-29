@@ -81,6 +81,7 @@ $(document).ready(function(){
                 sender: sender
             });
 
+
             var socket = io.connect(SIGNALING_SERVER  +'/'+ channel);
             socket.channel = channel;
 
@@ -130,12 +131,12 @@ $(document).ready(function(){
                                                     //Control div
                                                     '<div class="controls">'+
                                                         '<div class="form-group">'+
-                                                            '<button id="sdDisplay" class="btn btn-default">'+
-                                                                '<i class="fa fa-comment-o"></i>'+
-                                                            '</button>'+
-                                                            '<button id="hdDisplay" class="btn btn-default" >'+
-                                                                '<i class="fa fa-bell"></i>'+
-                                                            '</button>'+
+//                                                            '<button id="sdDisplay" class="btn btn-default">'+
+//                                                                '<i class="fa fa-comment-o"></i>'+
+//                                                            '</button>'+
+//                                                            '<button id="hdDisplay" class="btn btn-default" >'+
+//                                                                '<i class="fa fa-bell"></i>'+
+//                                                            '</button>'+
                                                             '<button id="muteVideo" class="btn btn-default">'+
                                                                 '<i class="fa fa-video-camera"></i>'+
                                                             '</button>'+
