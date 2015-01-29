@@ -5,6 +5,27 @@ var role;
 // onNewSession can be fired multiple times for same session
 // to handle such issues; storing session-ids in an object
 var sessions = { };
+var iceServers = [];
+
+iceServers.push({
+    url: 'stun:stun.google.com:19302'
+});
+
+iceServers.push({
+    url: 'stun:stun.anyfirewall.com:3478'
+});
+
+//iceServers.push({
+//    url: 'turn:turn.bistri.com:80',
+//    credential: 'homeo',
+//    username: 'homeo'
+//});
+//
+//iceServers.push({
+//    url: 'turn:turn.anyfirewall.com:443?transport=tcp',
+//    credential: 'webrtc',
+//    username: 'webrtc'
+//});
 
 $(document).ready(function(){
 
@@ -14,6 +35,10 @@ $(document).ready(function(){
         else role = 'Broadcaster';
 
         connection = new RTCMultiConnection(roomName);
+        // this line disables xirsys servers
+        connection.getExternalIceServers = false;
+        connection.iceServers = [];// prevents all "predefined" ice servers
+        connection.iceServers = iceServers;
 
         // www.rtcmulticonnection.org/docs/sdpConstraints/
         connection.sdpConstraints.mandatory = {
@@ -257,7 +282,7 @@ $(document).ready(function(){
                     $('#'+ connection.userid).append(eMessage);
                     setTimeout(function() {
                         $( ".popup" ).removeAttr( "style" ).hide();
-                    }, 60000 );
+                    }, 6000 );
 
                     var scroll = function(div) {
                         var totalHeight = 0;
@@ -313,7 +338,8 @@ $(document).ready(function(){
             $('#'+e.userid).append(eMessage);
             setTimeout(function() {
                 $( ".popup" ).removeAttr( "style" ).hide();
-            }, 60000 );
+            }, 6000);
+            $("#chatContent").show();
             document.getElementById('chatSoundEffect').play();
         }
 

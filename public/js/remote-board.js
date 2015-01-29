@@ -12,9 +12,20 @@
         App.btClear = document.createElement('button');
         App.btClear.innerText = "Clear";
         App.btClear.id = "btClear";
+
+        App.labelBackground =  document.createElement('label');
+        App.labelBackground.innerText = 'Pen Color: ';
+        App.labelPenColor =  document.createElement('label');
+        App.labelPenColor.innerText = 'BackGround: ';
+        App.lablelPenSize = document.createElement('label');
+        App.lablelPenSize.innerText = 'Pen Size: ';
+
         App.changeColor =document.createElement("input");
         App.changeColor.id = 'changeColor';
         App.changeColor.type= 'color';
+
+
+        App.btClear.setAttribute('class', 'btn btn-default');
 
         App.changeBG =document.createElement("input");
         App.changeBG.id = 'changeBG';
@@ -26,11 +37,15 @@
         App.changeWidth.min=1;
         App.changeWidth.max=50;
 
-        document.getElementsByTagName('article')[0].appendChild(App.canvas);
-        document.getElementsByTagName('article')[0].appendChild(App.btClear);
-        document.getElementsByTagName('article')[0].appendChild(App.changeColor);
-        document.getElementsByTagName('article')[0].appendChild(App.changeBG);
-        document.getElementsByTagName('article')[0].appendChild(App.changeWidth);
+
+        document.getElementById('myCanvas').appendChild(App.canvas);
+        document.getElementById('canvasControls').appendChild(App.btClear);
+        document.getElementById('canvasControls').appendChild(App.labelBackground);
+        document.getElementById('canvasControls').appendChild(App.changeColor);
+        document.getElementById('canvasControls').appendChild(App.labelPenColor);
+        document.getElementById('canvasControls').appendChild(App.changeBG);
+        document.getElementById('canvasControls').appendChild(App.lablelPenSize);
+        document.getElementById('canvasControls').appendChild(App.changeWidth);
         App.ctx = App.canvas.getContext("2d");
         App.ctx.fillStyle = "solid";
         App.ctx.strokeStyle = "#ECD018";
